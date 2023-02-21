@@ -1,0 +1,253 @@
+@media screen and (min-width: 0px) {
+  /*Seite & boxen*/
+  html {
+    height: 100%;
+  }
+  body {
+    min-height: 101%;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-size: 120%;
+    line-height: 1.4;
+  }
+
+  main {
+    width: 100%;
+    margin: 0;
+  }
+
+  article {
+    width: 90%;
+    margin: 0 6% 50px 4%;
+    padding: 0;
+    border-width: 10px 10px 20px;
+    border-radius: 0 0 50px 50px;
+  }
+
+  section {
+    width: 97%;
+    margin: 0 0 50px 1%;
+    padding: 0;
+    border-width: 5px 5px 10px 5px;
+    border-radius: 10px;
+  }
+
+  h4 + div {
+    /* box-shadow: black 10px; */
+    /* box-shadow: inset black 10px; */
+    border-width: 20px;
+    border-radius: 0 0 5% 5%;
+  }
+
+  footer {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 2rem 5rem 2rem 0;
+    padding-left: 40%;
+  }
+
+  /*Navigations leiste*/
+  nav {
+    width: 100%;
+    margin: 0;
+    border-width: 2px;
+  }
+
+  /*Liste*/
+  nav ul {
+    margin: 0;
+  }
+
+  nav li {
+    margin: 5px 0 5px 0;
+    padding: 0;
+    border-width: 2px;
+    border-radius: 8px;
+  }
+
+  nav a {
+    margin: 0;
+    padding: 0.4rem;
+  }
+
+  nav.navi3 a.aktuell,
+  a.aktuell {
+    font-weight: bold;
+  }
+
+  h1 {
+    margin: 0;
+    padding: 2rem;
+    font-size: 3rem;
+    font-weight: normal;
+  }
+
+  :is(h2, h3, h4) {
+    height: 100;
+    width: 100;
+    margin: 0;
+    padding: 0;
+    border-width: 5px;
+  }
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  h4 {
+    padding-top: 5px;
+    margin-top: 5px;
+    border-radius: 100% 100% 0 0;
+  }
+  h4:has(+ div[style*="display: none;"]) {
+    border-radius: 40%;
+    padding: 5px 0;
+    margin: 5px 0;
+  }
+  h5 {
+    margin: 0;
+    padding: 30px;
+    font-size: 30px;
+    font-weight: normal;
+  }
+
+  h6 {
+    font-size: 30px;
+    margin: 0;
+  }
+
+  /*Tabellen Code*/
+  /*Tabelle*/
+  table {
+    width: 90%;
+    margin: 0 0 1em 5%;
+  }
+
+  /*Rahmen*/
+  table,
+  th,
+  td,
+  caption {
+    border-width: thin;
+  }
+
+  /*Überschriften*/
+  th,
+  caption {
+    font-weight: 700;
+  }
+
+  /*Schrift*/
+  th,
+  td {
+    font-weight: normal;
+  }
+
+  /*Abstand*/
+  th,
+  td,
+  caption {
+    padding: 0.4em 0.6em;
+  }
+
+  /* Test */
+  div > p {
+    margin-left: 20px;
+  }
+
+  /* Kontrollanzeige */
+
+  /* button {
+    padding: 30px;
+    border: black 10px solid;
+    border-radius: 5%;
+  } */
+
+  /*Schnellnach hoch/runter*/
+  :is(#up, #down) {
+    right: 1vw;
+    height: 5vh;
+    width: 4vw;
+    margin: 0;
+    border-width: 0.4vw;
+    font-size: 1vw;
+  }
+  #up {
+    bottom: 6vh;
+    border-radius: 100% 100% 0 0;
+  }
+  #down {
+    bottom: 1vh;
+    border-radius: 0 0 100% 100%;
+  }
+
+  /*Boxen öffnen schliesen*/
+  #controller :is(table, caption, th, td) {
+    font-size: 1.5vh;
+    border-width: 0.5vh;
+  }
+  #BoxBar {
+    height: 13vh;
+    width: auto;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    border-width: 0.5vw;
+  }
+
+  /* Overwrite Settings */
+  #ElementOption {
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+  }
+  #ElementOption table {
+    width: auto;
+    min-width: 8vw;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 1.5vh;
+  }
+
+  :is(#ElementOption table, #ElementOption table caption) {
+    border-width: 0.5vh;
+  }
+  /*Speziel Elements*/
+
+  /*Speziel Inhalt*/
+  /*Bild Style*/
+  #cssbild {
+    height: auto;
+    width: 100%;
+  }
+
+  /*Kurz wahl CSS Einstellungen*/
+  /*Markierungen*/
+  /*Text*/
+  .zentrieren {
+    margin: 0;
+  }
+
+  /*Testfarbe*/
+
+  /*Link Färbung*/
+
+  a:is(
+      [href*="w3schools"],
+      [href*="selfhtml"],
+      [href*="developer"],
+      [href*="mediaevent"],
+      [href*="youtube"]
+    ) {
+    font-size: 130%;
+    font-weight: 500;
+  }
+}
