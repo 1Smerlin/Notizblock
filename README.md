@@ -252,4 +252,4 @@ Weshalb ich nicht ein fertiges tool anwende???
 \*\*Weil jedes programm was ich jemals nutzte hatte ein defizieht.
 Mein Progamm ist nicht mal ansatzweiße perfekt, aber was mir nicht gefählt kann ich verändern weil es mein progamm ist.
 
-## **Mein Ziel ist es mit diesem Programm ein multitasking tool zur Informations sammeln zu erstellen und ein intuitives nachschlage werk, ohne massen an überflussiger informationen wie wikipedia aber auch ohne langes gelabere wie in anderen webseiten. Kurz und Knackig Mein persönliches informations verzeichnis**
+## **Mein Ziel ist es, mit diesem Programm ein Multitasking Tool zum Information sammeln, zum Erstellen und eines intuitives nachschlage Werk, ohne Massen an überflüssigen Informationen wie Wikipedia, aber auch ohne lange umschweife wie in anderen Webseiten. Kurz und Knackig, Mein persönliches Informationsverzeichnis**
