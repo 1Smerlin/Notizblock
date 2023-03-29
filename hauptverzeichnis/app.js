@@ -164,7 +164,6 @@ function navigation() {
     }
   }
 }
-
 function controlBar() {
   console.log("!!!---controlBar---!!!");
   const controller = document.createElement("div");
@@ -224,6 +223,7 @@ function controlBar() {
   upDown();
   document.body.appendChild(controller);
 }
+
 // NewBoxen System
 function newBoxen() {
   allDivs = main.getElementsByTagName("div");
@@ -250,6 +250,7 @@ function newBoxen() {
   });
   function Boxen(e) {
     console.log("!!!---Boxen---!!!");
+    console.log(e);
     if (e.target.nextElementSibling.style.display === "none") {
       e.target.nextElementSibling.style.display = "";
       if (e.target.nextElementSibling.style.length === 0) {
@@ -284,11 +285,6 @@ function boxBarSytem() {
 function clickHold() {
   console.log("!!!---clickHold---!!!");
   document.body.addEventListener("mousedown", (e) => {
-    console.log("!!!---Test---!!!");
-    console.log(e);
-    console.log(e.composedPath());
-    console.log(e.composedPath().length);
-    console.log(e.composedPath()[e.composedPath().length - 5]);
     if (
       document.getElementById("ElementSeletction") === null &&
       document.getElementById("ElementOption") === null &&
@@ -307,21 +303,26 @@ function clickHold() {
           mouseHold = setTimeout(() => {
             document.body.removeEventListener("mouseup", EndMouseEvent);
             document.body.removeEventListener("mouseout", EndMouseEvent);
-            windowsItemSelection(e.target);
-            ElementOption();
-            overriteFinish();
-            attributeBar();
-            overwritePointer();
-            overwritePfeile();
+            openOverwriteOption(e.target);
           }, 1000);
         }
       }
     }
   });
 }
+//Overwrite open the Overwrite Options
+function openOverwriteOption(Element) {
+  windowsItemSelection(Element);
+  ElementOption();
+  overriteFinish();
+  attributeBar();
+  overwritePointer();
+  overwritePfeile();
+}
 //Overwrite navigation
 function windowsItemSelection(e) {
   console.log("!!!---windowsItemSelection---!!!");
+  console.log(e);
   if (document.getElementById("ElementSeletction") !== null) {
     controller.removeChild(document.getElementById("ElementSeletction"));
   }
@@ -335,6 +336,9 @@ function windowsItemSelection(e) {
   let table = document.createElement("table");
   table.id = "ElementSeletction";
   let caption = document.createElement("caption");
+  console.log("!!!---test---!!!");
+  console.log(FocusElement);
+  console.log(FocusElement.tagName);
   caption.innerText = FocusElement.tagName;
   let tbody = document.createElement("tbody");
   let tr = document.createElement("tr");
@@ -478,17 +482,20 @@ function overriteFinish() {
   button.id = "overriteFinishButton";
   controller.appendChild(button);
   button.addEventListener("click", (e) => {
-    controller.removeChild(document.getElementById("ElementSeletction"));
-    controller.removeChild(document.getElementById("ElementOption"));
-    controller.removeChild(document.getElementById("overriteFinishButton"));
-    controller.removeChild(document.getElementById("attributeBar"));
-    controller.removeChild(document.getElementById("overwritePointer"));
-    controller.removeChild(document.getElementById("overwritePfeile"));
-    FocusElement = seekFocus();
-    if (FocusElement !== undefined) {
-      FocusElement.classList.remove("Focus");
+    let field = document.getElementsByClassName("textarea_for_overwrite");
+    if (field.length === 0) {
+      controller.removeChild(document.getElementById("ElementSeletction"));
+      controller.removeChild(document.getElementById("ElementOption"));
+      controller.removeChild(document.getElementById("overriteFinishButton"));
+      controller.removeChild(document.getElementById("attributeBar"));
+      controller.removeChild(document.getElementById("overwritePointer"));
+      controller.removeChild(document.getElementById("overwritePfeile"));
+      FocusElement = seekFocus();
+      if (FocusElement !== undefined) {
+        FocusElement.classList.remove("Focus");
+      }
+      reviseSend();
     }
-    reviseSend();
   });
 }
 
@@ -501,14 +508,17 @@ function overwritePointer() {
   controller.appendChild(overwritebutton);
   overwritebutton.addEventListener("click", function usedPointer() {
     console.log("!!!---overwritePointer click---!!!");
-    main.addEventListener(
-      "click",
-      (e) => {
-        console.log("!!!---overwritePointer click Auswahl---!!!");
-        windowsItemSelection(e.target);
-      },
-      { once: true }
-    );
+    let field = document.getElementsByClassName("textarea_for_overwrite");
+    if (field.length === 0) {
+      main.addEventListener(
+        "click",
+        (e) => {
+          console.log("!!!---overwritePointer click Auswahl---!!!");
+          windowsItemSelection(e.target);
+        },
+        { once: true }
+      );
+    }
   });
 }
 
@@ -516,7 +526,14 @@ function overwritePointer() {
 function ElementOption() {
   console.log("!!!---ElementOption---!!!");
   overwriteElemente = {
-    Write: ["HTML", "NewElement", "CopyElement", "PasteElement", "delete"],
+    Write: [
+      "Text",
+      "HTML",
+      "NewElement",
+      "CopyElement",
+      "PasteElement",
+      "delete",
+    ],
     ["Einzelne"]: ["li", "td", "th", "tr", "a", "p"],
   };
   readyMadeOptions = {
@@ -559,6 +576,9 @@ function ElementOptionFunc() {
     if (e.target.matches("td")) {
       console.log("!!!---ElementOptionFunc click---!!!");
       switch (e.target.innerText) {
+        case "Text":
+          overwriteText();
+          break;
         case "HTML":
           overwriteHTML();
           break;
@@ -675,6 +695,44 @@ function ElementOptionFunc() {
   });
 }
 
+// overwrite Text
+function overwriteText() {
+  console.log("!!!---overwriteText---!!!");
+  let div = NewInput(
+    "TextInput",
+    FocusElement.innerText,
+    "textWriteCancel(1)",
+    "textWriteFinish(this)"
+  );
+  FocusElement.replaceWith(div);
+  document.getElementById("textInput").focus();
+}
+
+// write buttons
+function textWriteCancel(exception) {
+  console.log("!!!---textWriteCancel---!!!");
+  document.getElementById("TextInput").replaceWith(FocusElement);
+  if (exception !== undefined && exception === 1) {
+    if (typeof jumpTo !== "undefined") {
+      delete jumpTo;
+    }
+  }
+}
+function textWriteFinish(button) {
+  console.log("!!!---textWriteFinish---!!!");
+  console.log(FocusElement);
+  FocusElement.innerText = button.parentElement.querySelector("textarea").value;
+  document.getElementById("TextInput").replaceWith(FocusElement);
+  if (typeof jumpTo !== "undefined" && jumpTo.length > 0) {
+    windowsItemSelection(jumpTo[0][0]);
+    if (jumpTo.shift()[1]) {
+      overwriteText();
+    }
+  } else {
+    windowsItemSelection(FocusElement);
+  }
+}
+
 // overwrite HTML
 function overwriteHTML() {
   console.log("!!!---overwriteHTML---!!!");
@@ -716,9 +774,7 @@ function writeFinish(button) {
 // NewElement
 function NewElement() {
   console.log("!!!---NewElement---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   let div = NewInput(
     "NewElementDiv",
     "",
@@ -731,7 +787,6 @@ function NewElement() {
       .getElementsByClassName("Focus2")[0] === undefined
   ) {
     FocusElement.appendChild(div);
-    document.getElementById("HTMLInput").click();
   } else {
     Focus2Number = Array.prototype.slice
       .call(
@@ -794,9 +849,7 @@ function copyElement() {
 // pasteElement
 function pasteElement() {
   console.log("!!!---pasteElement---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   let div = NewInput(
     "pasteElementDiv",
     "",
@@ -831,7 +884,7 @@ function pasteElement() {
 function pushElement(button) {
   console.log("!!!---pushElement---!!!");
   let textContent = button.parentElement.querySelector("textarea").value;
-  console.log(textContent);
+  textContent.replace(' class="Focus"', "");
   let range = document.createRange();
   let textElement = range.createContextualFragment(textContent);
   console.log(textElement);
@@ -893,9 +946,7 @@ function overwriteDelete(button) {
 // BoxSystem
 function overwriteArticle() {
   console.log("!!!---overwriteArticle---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   jumpTo = [];
   let article = document.createElement("article");
   let h2 = document.createElement("h2");
@@ -928,13 +979,11 @@ function overwriteArticle() {
     );
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 function overwriteSection() {
   console.log("!!!---overwriteSection---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   jumpTo = [];
   let section = document.createElement("section");
   let h3 = document.createElement("h3");
@@ -967,13 +1016,11 @@ function overwriteSection() {
     );
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 function overwriteDIV() {
   console.log("!!!---overwriteDIV---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   jumpTo = [];
   let h4 = document.createElement("h4");
   let div = document.createElement("div");
@@ -1008,15 +1055,13 @@ function overwriteDIV() {
     );
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 
 // Auflistung
 // Table
 function ElementOptionTableNumber() {
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   // create input field
   if (document.getElementById("objetNumber") !== null) {
     ElementOptionTable(document.getElementById("validateButton"));
@@ -1087,14 +1132,12 @@ function ElementOptionTable(button) {
     );
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 
 // UL
 function ElementOptionULNumber() {
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   if (document.getElementById("objetNumber") !== null) {
     ElementOptionUL(document.getElementById("validateButton"));
   } else {
@@ -1148,13 +1191,11 @@ function ElementOptionUL(button) {
     );
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 // OL
 function ElementOptionOLNumber() {
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   if (document.getElementById("objetNumber") !== null) {
     ElementOptionOL(document.getElementById("validateButton"));
   } else {
@@ -1208,15 +1249,13 @@ function ElementOptionOL(button) {
     );
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 
 // Individual items
 // LI
 function ElementOptionLINumber() {
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   if (document.getElementById("objetNumber") !== null) {
     ElementOptionLI(document.getElementById("validateButton"));
   } else {
@@ -1264,13 +1303,7 @@ function ElementOptionLI(button) {
           .getElementById("ElementSeletction")
           .getElementsByClassName("Focus2")[0]
       );
-    console.log(ListLengthNumber);
-    console.log(jumpTo[ListLengthNumber - 1][0]);
     for (let i = ListLengthNumber - 1; i >= 0; i--) {
-      console.log(
-        ListLengthNumber + " - " + i + " = " + (ListLengthNumber - i)
-      );
-      console.count("runde");
       FocusElement.children[Focus2Number].insertAdjacentElement(
         "beforebegin",
         jumpTo[i][0]
@@ -1278,7 +1311,7 @@ function ElementOptionLI(button) {
     }
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 
 // TD
@@ -1348,7 +1381,7 @@ function ElementOptionTD(button) {
     }
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 
 // TH
@@ -1418,14 +1451,12 @@ function ElementOptionTH(button) {
     }
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 
 function ElementOptionTR() {
   console.log("!!!---ElementOptionTR---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   let tr = document.createElement("tr");
   if (
     document
@@ -1455,9 +1486,7 @@ function ElementOptionTR() {
 
 function ElementOptionA() {
   console.log("!!!---ElementOptionA---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   let a = document.createElement("a");
   a.href = "";
   if (
@@ -1481,7 +1510,7 @@ function ElementOptionA() {
     FocusElement.children[Focus2Number].insertAdjacentElement("beforebegin", a);
   }
   windowsItemSelection(a);
-  overwriteHTML();
+  overwriteText();
   let attributeButton = document
     .getElementById("attributeBar")
     .getElementsByTagName("td");
@@ -1497,9 +1526,7 @@ function ElementOptionA() {
 }
 function ElementOptionP() {
   console.log("!!!---ElementOptionP---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   let p = document.createElement("p");
   if (
     document
@@ -1522,15 +1549,13 @@ function ElementOptionP() {
     FocusElement.children[Focus2Number].insertAdjacentElement("beforebegin", p);
   }
   windowsItemSelection(p);
-  overwriteHTML();
+  overwriteText();
 }
 
 // prefabricated elements
 function ElementOptionMethods() {
   console.log("!!!---ElementOptionTable---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   jumpTo = [];
   subclasses = ["Methoden", "Wirkung", "Syntax", "Beispiel"];
   let newtable = document.createElement("table");
@@ -1579,13 +1604,11 @@ function ElementOptionMethods() {
     );
   }
   windowsItemSelection(jumpTo.shift()[0]);
-  overwriteHTML();
+  overwriteText();
 }
 function ElementOptionTablesRow() {
   console.log("!!!---ElementOptionTablesRow---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   let searchedElement = FocusElement;
   let insideTbody;
   let orientationElement;
@@ -1693,17 +1716,15 @@ function ElementOptionTablesRow() {
             );
           }
         }
-        windowsItemSelection(jumpTo[0][0]);
-        overwriteHTML();
+        windowsItemSelection(jumpTo.shift()[0]);
+        overwriteText();
       }
     }
   }
 }
 function ElementOptionTablesColumn() {
   console.log("!!!---ElementOptionTablesColumn---!!!");
-  if (document.getElementById("HTMLInput") !== null) {
-    writeCancel();
-  }
+  writeFieldClose();
   let searchedElement = FocusElement;
   let orientationElement;
   while (
@@ -1778,8 +1799,8 @@ function ElementOptionTablesColumn() {
           );
         }
       }
-      windowsItemSelection(jumpTo[0][0]);
-      overwriteHTML();
+      windowsItemSelection(jumpTo.shift()[0]);
+      overwriteText();
     }
   }
 }
@@ -2150,15 +2171,7 @@ function ElementparentGoDown(e) {
 
 function reviseSend() {
   console.log("!!!---reviseSend---!!!");
-  console.log("!!!!123Test !!!!!!!!!");
-  console.log(window.location.href);
-  console.log(window.location.hostname);
-  console.log(window.location.pathname);
-  console.log(window.location.protocol);
-  console.log(
-    window.location.protocol + "//" + window.location.hostname + ":8005"
-  );
-  url = window.location.protocol + "//" + window.location.hostname + ":8005";
+  url = window.location.protocol + "//" + window.location.hostname + ":3005";
   main2 = main.cloneNode(true);
   ExtraButton = Array.prototype.slice.call(
     main2.getElementsByClassName("allURLOpen")
@@ -2270,9 +2283,14 @@ function NewInput(divId, content, func1, func2, inputID) {
   validateButton.appendChild(img);
   //writeTextarea
   let textarea = document.createElement("textarea");
+  textarea.classList.add("textarea_for_overwrite");
   textarea.setAttribute(
     "onkeydown",
-    "useKeyButton(this, '" + func2.slice(0, func2.length - 6) + "')"
+    "useKeyButton(this, '" +
+      func1.split("(")[0] +
+      "', '" +
+      func2.split("(")[0] +
+      "')"
   );
   if (inputID === undefined) {
     textarea.id = "textInput";
@@ -2287,16 +2305,33 @@ function NewInput(divId, content, func1, func2, inputID) {
   return div;
 }
 
-function useKeyButton(keyButton, func2) {
+function writeFieldClose() {
+  if (document.getElementById("TextInput") !== null) {
+    textWriteCancel();
+  }
+}
+
+function useKeyButton(keyButton, func1, func2) {
+  console.log("!!!!!!_____KEY_____!!!!!!");
   console.log(keyButton);
   console.log(func2);
   document.onkeydown = function (e) {
-    console.log(e);
+    console.log("The KEYNAME");
     console.log(e.code);
-    if (e.code === "Enter") {
-      e.preventDefault();
-      console.log("Dückt Enter");
-      window[func2](keyButton);
+    switch (e.code) {
+      case "Enter":
+        if (!e.shiftKey) {
+          // Überprüfen, ob die Shift-Taste nicht gedrückt ist
+          e.preventDefault();
+          console.log("Drückt Enter");
+          window[func2](keyButton);
+        }
+        break;
+      case "Escape":
+        e.preventDefault();
+        console.log("Drückt ESC");
+        window[func1](1);
+        break;
     }
   };
 }

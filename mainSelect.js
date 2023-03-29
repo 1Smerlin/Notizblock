@@ -4,9 +4,11 @@ const url = require("url");
 const path = require("path");
 const http = require("http");
 const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const multer = require("multer");
 const folderLocation = "";
+const PORT = 8000;
 
 if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
   /*Server*/
@@ -56,9 +58,9 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
         return res.end();
       });
     })
-    .listen(8000, () => {
+    .listen(PORT, () => {
       if (processComment) {
-        console.info("Server Port 8000 läuft!");
+        console.info("Server Port " + PORT + " läuft!");
       }
     });
 
@@ -71,12 +73,13 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
   rückspulen = 0;
   processComment = 1;
 
+  q = 1;
   //Komandozeile
-  verzeichnisTest = 1;
-  hinzufügTest = 1;
-  löschTest = 1;
-  moveTest = 1;
-  overwriteTest = 1;
+  verzeichnisTest = q;
+  hinzufügTest = q;
+  löschTest = q;
+  moveTest = q;
+  overwriteTest = q;
 
   // Debug Tool
   if (rückspulen) {
@@ -105,7 +108,12 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
   verzeichnis.options("*", cors());
   //Extra
 
-  const upload = multer();
+  // Hier wird Multer konfiguriert, um Dateien mit einer Größe von bis zu 10 MB zu akzeptieren
+  const upload = multer({
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10 MB
+    },
+  });
 
   verzeichnis.post("/", upload.none(), (req, res) => {
     if (processComment) {
@@ -129,9 +137,9 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
     res.json("Neues Verzeichnis!");
   });
 
-  verzeichnis.listen(8001, () => {
+  verzeichnis.listen(PORT + 1, () => {
     if (processComment) {
-      console.info("Verzeichnis Port 8001 läuft!");
+      console.info("Verzeichnis Port " + (PORT + 1) + " läuft!");
     }
   });
 
@@ -206,9 +214,9 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
     }
   });
 
-  hinzufügen.listen(8002, () => {
+  hinzufügen.listen(PORT + 2, () => {
     if (processComment) {
-      console.info("hinzufügen Port 8002 läuft!");
+      console.info("hinzufügen Port " + (PORT + 2) + " läuft!");
     }
   });
 
@@ -256,7 +264,11 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
         }
       } else {
         res.json(
-          "Hallo Client von Port 8003! " + datei[0] + " Existiert nicht"
+          "Hallo Client von Port " +
+            (PORT + 3) +
+            "! " +
+            datei[0] +
+            " Existiert nicht"
         );
       }
     } else {
@@ -264,9 +276,9 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
     }
   });
 
-  lösch.listen(8003, () => {
+  lösch.listen(PORT + 3, () => {
     if (processComment) {
-      console.info("lösch Port 8003 läuft!");
+      console.info("lösch Port " + (PORT + 3) + " läuft!");
     }
   });
 
@@ -837,9 +849,9 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
     }
   });
 
-  move.listen(8004, () => {
+  move.listen(PORT + 4, () => {
     if (processComment) {
-      console.info("lösch Port 8004 läuft!");
+      console.info("lösch Port " + (PORT + 4) + " läuft!");
     }
   });
 
@@ -848,8 +860,10 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
   const overwrite = express();
 
   //Extra
-  overwrite.use(express.urlencoded({ extended: true }));
-  overwrite.use(express.json());
+  overwrite.use(express.urlencoded({ limit: "10mb", extended: true }));
+  overwrite.use(express.json({ limit: "10mb" }));
+  // overwrite.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+  // overwrite.use(bodyParser.json({ limit: "10mb" }));
   overwrite.use(cors());
   overwrite.options("*", cors());
 
@@ -895,9 +909,9 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
     }
   });
 
-  overwrite.listen(8005, () => {
+  overwrite.listen(PORT + 5, () => {
     if (processComment) {
-      console.info("Überschreiben Port 8005 läuft!");
+      console.info("Überschreiben Port " + (PORT + 5) + " läuft!");
     }
   });
 
@@ -1101,8 +1115,6 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
       ausgabe.includes(" style=''") ||
       ausgabe.includes(' class=""') ||
       ausgabe.includes(" class=''") ||
-      ausgabe.includes("<tbody>") ||
-      ausgabe.includes("</tbody>") ||
       ausgabe.includes("&amp;") ||
       ausgabe.includes("&gt;") ||
       ausgabe.includes("<br>")
@@ -1116,8 +1128,6 @@ if (fs.existsSync(folderLocation + "./hauptverzeichnis")) {
         .replace(" style=''", "")
         .replace(' class=""', "")
         .replace(" class=''", "")
-        .replace("<tbody>", "")
-        .replace("</tbody>", "")
         .replace("&amp;", "&")
         .replace("&gt;", ">")
         .replace("<br>", "<br/>");

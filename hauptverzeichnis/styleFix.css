@@ -1,25 +1,109 @@
 /*ANCHOR Variablen*/
-* {
-  --h2-back-color: #1f98d4;
+:root {
+  /* Zugewiesen */
+  /* body */
+  --body-color: #c5bdbd;
+  --body-background-color: #121111;
+  /* footer */
+  --footer-color: #ffffff;
+  --footer-back-color: #121313;
+  /* Box */
+  --h2-back-color: #0d405a;
   --h3-back-color: #1f98d47e;
-  --div1-h4-back-color: #228c727e;
-  --div2-h4-back-color: #59228c7e;
+  --div1-h4-back-color: #158dde7e;
+  --div2-h4-back-color: #0dc56c7e;
+  --box-back-color: #333333;
+  /* Rahmen 
+      h1
+  */
+  --border-color: #000000;
+  /* Navigation */
+  --nav1: #0a0a0b;
+  --nav2: #121314;
+  --nav3: #252a2c;
+  --nav4: #394246;
+  --nav5: #000000;
+  --nav-color: #ffffff;
+  --nav-back-color: #000000;
+  --nav-border-color: #ffffff;
+  --akt-nav-color: #2a5af9;
+  --under-akt-nav-color: #ff0000;
+  /* Tabelle */
+  --table-back-color: #ffffff;
+  --thead-color: #ffffff;
+  --thead-back-color: #0a0909;
+  --table-link-back-color: #ffffff;
+  /* Spezial */
+  --svg-border-color: #000000;
+  --text-border-color: #ffffff;
+  --text-outline-color: #000000;
+  /* Links */
+  /*Link Färbung*/
+  --link-color: #0252ff;
+  --google-color: #0595ef;
+  --wikipedia-color: #156ba1;
+  --youtube-color: #ef0505;
+  --youtube-search-color: #ef0505;
+  --w3schools-color: #7fff00;
+  --developer-mozilla-color: #4d1a1a;
+  --selfhtml-color: #1f98d4;
+  --mediaevent-color: #c86017;
+  --geeksforgeeks-color: #04280d;
+  --developer-android-color: #18ba43;
+  /* overwrite Elements -----------------------------------------------------*/
+  /* Buttons */
+  --finishButton: #71b60a;
+  --selectorbutton: #b98604;
+  --validate-button-back-color: #008000;
+  --cancel-button-back-color: #ff0000;
+  /* ElementSeletction li */
+  --table-button-back-color: #000000;
+  --table-button-color: #ffffff;
+  --table-button-scroll-color: #888888;
+  --table-backbutton-color: #ff0000;
+  /* AttributeBar */
+  --attributebar-back-color: #b00ab6;
+  --akt-attributebar-back-color: #3a106d;
+  --attributebar-color: #000000;
 }
 
 /*CATEGORY Seite & boxen*/
+/* @media screen and (min-width: 62rem) {
+  main {
+    width: 90%;
+    margin-left: calc((100% - 62rem) / 2);
+    max-width: 62rem;
+  }
+} */
 body {
-  color: #263238;
-  background-color: #ffffff;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: var(--body-color);
+  background-color: var(--body-background-color);
+  font-family: "Helvetica Neue", Arial, sans-serif;
   word-break: break-all;
+  width: 100%;
 }
 
+/* Alle Elemente im main-Element mittig ausrichten */
 main {
-  /* background-color: green; */
-  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/*Überschriften & Boxen*/
+/* Die maximale Breite des main-Elements auf 800px beschränken */
+@media (min-width: 1000px) {
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+}
+
+footer {
+  background-color: var(--footer-back-color);
+  color: var(--footer-color);
+}
+
+/*Überschriften & Boxen------------------------------------------------------------------------------------*/
 h1 {
   text-decoration: underline;
 }
@@ -27,7 +111,7 @@ h1 {
   text-align: center;
 }
 :is(h2, h3, h4) {
-  border-color: black;
+  border-color: var(--border-color);
   border-style: solid;
 }
 /* Box 1 */
@@ -35,8 +119,9 @@ h2 {
   background-color: var(--h2-back-color);
 }
 article {
+  background-color: var(--box-back-color);
   border-style: solid;
-  border-color: black;
+  border-color: var(--border-color);
 }
 
 /* Box 2 */
@@ -44,8 +129,9 @@ h3 {
   background-color: var(--h3-back-color);
 }
 section {
+  background-color: var(--box-back-color);
   border-style: solid;
-  border-color: black;
+  border-color: var(--border-color);
 }
 
 /* Box 3 */
@@ -54,6 +140,7 @@ h4 {
 }
 h4 + div {
   /* border-style: dashed; */
+  background-color: var(--box-back-color);
   border-style: solid;
   border-color: var(--div1-h4-back-color);
 }
@@ -67,31 +154,26 @@ h4 + div h4 + div {
   border-color: var(--div2-h4-back-color);
 }
 
-footer {
-  background-color: #1c1f1e;
-  color: #ffffff;
-}
-
-/*Navigations leiste*/
+/*Navigations leiste-------------------------------------------------------------------------------------------------------------------------*/
 nav {
   border-style: solid;
-  border-color: black;
+  border-color: var(--border-color);
   margin: 0;
 }
 nav.navi1 {
-  background-color: #1c1f1e;
+  background-color: var(--nav1);
 }
 nav.navi2 {
-  background-color: #263238;
+  background-color: var(--nav2);
 }
 nav.navi3 {
-  background-color: #36677e;
+  background-color: var(--nav3);
 }
 nav.navi4 {
-  background-color: #647881;
+  background-color: var(--nav4);
 }
 nav.navi5 {
-  background-color: red;
+  background-color: var(--nav5);
 }
 
 /*Liste*/
@@ -103,36 +185,71 @@ nav > ul {
   flex-wrap: wrap;
 }
 
-nav > ul > li {
-  background-color: black;
+nav li {
+  background-color: var(--nav-back-color);
   border-style: solid;
-  border-color: whitesmoke;
+  border-color: var(--nav-border-color);
   min-width: 100px;
   text-align: center;
 }
 
 nav a {
+  text-decoration: none;
   display: block;
-  color: white;
+  color: var(--nav-color);
   text-decoration: none;
 }
 
 nav.navi3 a {
+  text-decoration: none;
   display: block;
-  color: white;
+  color: var(--nav-color);
   text-decoration: none;
 }
 
 nav.navi3 a.aktuell,
 a.aktuell {
-  color: var(--h2-back-color);
+  color: var(--akt-nav-color);
 }
 nav.navi3 a.aktuell2,
 a.aktuell2 {
-  color: red;
+  color: var(--under-akt-nav-color);
 }
-/*!CATEGORY Seite & boxenB*/
-/*CATEGORY Tabellen Code*/
+
+/*Unterklassen*/
+.wahl ul {
+  display: inline;
+  justify-content: normal;
+  align-items: normal;
+  list-style: none;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+}
+
+.wahl li {
+  margin: 0;
+  border-style: solid;
+}
+
+.wahl {
+  position: relative;
+}
+
+.wahl div {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 300px;
+  overflow: initial;
+  z-index: 2;
+}
+
+.wahl:hover div {
+  display: block;
+}
+
+/*SECTION Tabellen Code--------------------------------------------------------------------------------------------------------------------------------*/
 /*Tabelle*/
 table {
   border-collapse: collapse;
@@ -146,24 +263,156 @@ th,
 td,
 caption {
   border-style: solid;
-  border-color: black;
+  border-color: var(--body-color);
 }
 
 /*Überschriften*/
 th,
 caption {
-  background-color: #404649;
-  color: #ffffff;
+  background-color: var(--thead-back-color);
+  color: var(--thead-color);
   text-align: center;
 }
-/*!CATEGORY  Tabellen Code*/
 
-/*CATEGORY Kontrollanzeige*/
+/*!SECTION */
+
+/*Bilder einstellung---------------------------------------------------------------------------------------------------------------------*/
+td img {
+  height: 35px;
+  width: 35px;
+  position: relative;
+  top: 10px;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+svg {
+  border: 5px solid var(--svg-border-color);
+}
+
+/* Extras ------------------------------------------------------------------------------*/
+/*Link Färbung*/
+a:is(
+    [href*="w3schools"],
+    [href*="selfhtml"],
+    [href*="mediaevent"],
+    [href*="youtube"]
+  ) {
+  text-decoration: none;
+}
+/*Farbe*/
+:is(h2, h3, h4) a {
+  background-color: var(--body-color);
+}
+a {
+  color: var(--link-color);
+}
+
+a[href*='https://www.google.com/']::before
+{
+  content: "Google: ";
+  color: var(--google-color);
+  font-weight: 600;
+}
+
+a[href*=".wikipedia.org/"]::before {
+  content: "Wikipedia: ";
+  color: var(--wikipedia-color);
+  font-weight: 600;
+}
+
+a[href*='https://www.youtube.com/']
+{
+  color: var(--youtube-color);
+}
+a[href*='https://www.youtube.com/results?search_query=']::before
+{
+  content: "YouTube: ";
+  color: var(--youtube-color);
+  font-weight: 600;
+}
+
+a[href*='https://www.w3schools.com/']
+{
+  color: var(--w3schools-color);
+}
+a[href*='https://developer.mozilla.org']
+{
+  color: var(--developer-mozilla-color);
+}
+a[href*='https://wiki.selfhtml.org']
+{
+  color: var(--selfhtml-color);
+}
+a[href*='https://www.mediaevent.de/']
+{
+  color: var(--mediaevent-color);
+}
+a[href*='https://www.geeksforgeeks.org/']
+{
+  font-weight: 600;
+  color: var(--geeksforgeeks-color);
+}
+a[href*='https://developer.android.com']
+{
+  text-decoration: underline;
+  font-weight: 600;
+  color: var(--developer-android-color);
+}
+
+/*Tabellen link*/
+:is(caption, th) a {
+  background-color: var(--table-link-back-color);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+/*Vorgefertigte CSS Einstellungen-------------------------------------------------------------*/
+
+/*Markierungen*/
+/*Text*/
+.zentrieren {
+  text-align: center;
+}
+
+/*Testfarbe*/
+
+.Unwichtig {
+  color: #00000080;
+}
+
+/*Spezifisch*/
+.Attribut {
+  color: #b3902f;
+}
+
+.Element {
+  color: #2463b5;
+}
+
+.green {
+  color: #29ce2e;
+}
+
+.#ff0000 {
+  color: #ff0000;
+}
+
+.coment {
+  background-color: #0f364972;
+}
+
+/*SECTION Kontrollanzeige---------------------------------------------------------------------------------------------------------------------------------------------------------*/
 /*ANCHOR Schnell nach hoch/runter*/
+/*!SECTION */
 :is(#up, #down) {
   position: fixed;
+  text-decoration: none;
   background-color: var(--h2-back-color);
-  border-color: black;
+  color: #ffffff;
+  border-color: var(--border-color);
   border-style: solid;
   text-align: center;
 }
@@ -171,13 +420,21 @@ caption {
 /*ANCHOR Boxen öffnen schliesen*/
 #BoxBar {
   position: fixed;
-  border-color: black;
   border-style: solid;
 }
 #BoxBar td {
+  user-select: none;
   background-color: var(--h2-back-color);
 }
 
+/*SECTION page revision---------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/* controller */
+#controller :is(caption, th, td) {
+  border-color: var(--border-color);
+}
+#controller td {
+  color: var(--border-color);
+}
 /*ANCHOR ElementOption */
 #ElementOption {
   position: fixed;
@@ -187,12 +444,12 @@ caption {
   flex-wrap: wrap;
 }
 #ElementOption table {
-  background-color: white;
+  background-color: var(--table-back-color);
 }
 
 /*ANCHOR ElementSeletction */
 #ElementSeletction {
-  background-color: white;
+  background-color: var(--table-back-color);
   position: fixed;
   width: 10vw;
   bottom: 13vh;
@@ -201,7 +458,6 @@ caption {
   font-size: 1.5vh;
 }
 #ElementSeletction ul {
-  background-color: red;
   display: inline;
   justify-content: normal;
   align-items: normal;
@@ -211,11 +467,9 @@ caption {
   padding: 0;
 }
 #ElementSeletction li {
-  margin: 0;
-  background-color: black;
-  color: white;
-  border-style: solid;
-  border-color: white;
+  margin: 8px 0 0 0;
+  background-color: var(--table-button-back-color);
+  color: var(--table-button-color);
 }
 #ElementSeletction td {
   position: relative;
@@ -229,8 +483,7 @@ caption {
   width: 1vw;
 }
 #ElementSeletction div::-webkit-scrollbar-thumb {
-  background: #888;
-  background-color: #888;
+  background: var(--table-button-scroll-color);
 }
 #ElementSeletction div::-webkit-scrollbar-thumb:hover {
   background: rgb(36, 35, 35);
@@ -239,46 +492,66 @@ caption {
   display: block;
 }
 #ElementSeletction tfoot td {
-  background-color: red;
+  background-color: var(--table-backbutton-color);
 }
+
+/*ANCHOR Buttons */
 /* Finish Button */
 #overriteFinishButton {
-  background-color: rgb(113, 182, 10);
+  background-color: var(--finishButton);
   position: fixed;
   right: 1vw;
   bottom: 43vh;
   padding: 0.5vw;
   font-size: 1.4vw;
   border-radius: 40%;
-  border: 0.3vw black solid;
+  border: 0.3vw var(--border-color) solid;
 }
 /*OverwritePointer*/
 #overwritePointer {
-  background-color: rgb(185, 134, 4);
+  background-color: var(--selectorbutton);
   position: fixed;
   right: 6vw;
   bottom: 43vh;
   padding: 0.5vw;
   font-size: 1.4vw;
   border-radius: 40%;
-  border: 0.3vw black solid;
+  border: 0.3vw var(--border-color) solid;
 }
 
-/* attributeBar */
+/* directional arrows */
+#overwritePfeile {
+  display: flex;
+  position: fixed;
+  right: 12vw;
+  bottom: 14vh;
+  margin: 0;
+  padding: 0;
+}
+#overwritePfeile button {
+  border: 0.3vw var(--border-color) solid;
+  margin: 0;
+  padding: 0.5vw;
+  font-size: 1.4vw;
+  border-radius: 40%;
+  width: 3vw;
+}
+
+/*ANCHOR attributeBar */
 #attributeBar {
-  background-color: rgb(176, 10, 182);
+  background-color: var(--attributebar-back-color);
+  color: var(--attributebar-color);
   position: fixed;
   right: 7vw;
   bottom: 0;
   padding: 2vw;
-  /* margin: 0; */
   font-size: 1vw;
-  border: 0.3vw black solid;
+  border: 0.3vw var(--border-color) solid;
   width: 20vw;
 }
 #attributeBar .Focus {
-  background-color: rgb(58, 16, 109);
-  border: 0.5vh black solid;
+  background-color: var(--akt-attributebar-back-color);
+  border: 0.5vh var(--border-color) solid;
 }
 #attributeBox {
   display: flex;
@@ -292,42 +565,25 @@ caption {
   width: 3vw;
   margin: 0vw;
   padding: 0vw;
-  border: 0.5vh black solid;
+  border: 0.5vh var(--border-color) solid;
   font-size: 1.4vw;
 }
 #attributeBox textarea {
   font-size: 1.5vw;
   border-radius: 3%;
-  border: 0.5vh white solid;
-  outline: 0.5vh black solid;
+  border: 0.5vh var(--text-border-color) solid;
+  outline: 0.5vh var(--text-outline-color) solid;
   margin: 0vw;
   padding: 0vw;
 }
 #attributeBox textarea:focus {
-  border: 0.8vh black solid;
+  border: 0.8vh var(--border-color) solid;
   outline: none;
-}
-
-#overwritePfeile {
-  display: flex;
-  position: fixed;
-  right: 12vw;
-  bottom: 14vh;
-  margin: 0;
-  padding: 0;
-}
-#overwritePfeile button {
-  border: 0.3vw black solid;
-  margin: 0;
-  padding: 0.5vw;
-  font-size: 1.4vw;
-  border-radius: 40%;
-  width: 3vw;
 }
 textarea {
   font-size: 40px;
 }
-/*Speziel Elements*/
+/* input fields */
 #objetNumber {
   display: flex;
   position: fixed;
@@ -340,19 +596,19 @@ textarea {
   width: 3vw;
   margin: 0vw;
   padding: 0vw;
-  border: 0.5vh black solid;
+  border: 0.5vh var(--border-color) solid;
   font-size: 1.4vw;
 }
 #objetNumber textarea {
   font-size: 1.5vw;
   border-radius: 3%;
-  border: 0.5vh white solid;
-  outline: 0.5vh black solid;
+  border: 0.5vh var(--text-border-color) solid;
+  outline: 0.5vh var(--text-outline-color) solid;
   margin: 0vw;
   padding: 0vw;
 }
 #objetNumber textarea:focus {
-  border: 0.8vh black solid;
+  border: 0.8vh var(--border-color) solid;
   outline: none;
 }
 
@@ -366,280 +622,30 @@ textarea {
 #selectDiv button {
   background-color: var(--h2-back-color);
   padding: 15px 30px;
-  border: 5px black solid;
+  border: 5px var(--border-color) solid;
   border-radius: 10%;
   font-size: 2rem;
 }
 
 /*Buttons*/
-button:has(img[src*='/icons/svg/check_black_24dp.svg']) {
-  background-color: green;
+button:has(img[src*="/icons/svg/check_black_24dp.svg"]) {
+  background-color: var(--validate-button-back-color);
   border-radius: 10%;
 }
-button:has(img[src*='/icons/svg/cancel_black_24dp.svg']) {
-  background-color: red;
+button:has(img[src*="/icons/svg/cancel_black_24dp.svg"]) {
+  background-color: var(--cancel-button-back-color);
   border-radius: 10%;
 }
-button:has(img:is([src*='/icons/svg/north_black_24dp.svg'], [src*='/icons/svg/south_black_24dp.svg'], [src*='/icons/svg/west_black_24dp.svg'], [src*='/icons/svg/east_black_24dp.svg'])) {
+button:has(
+    img:is(
+        [src*="/icons/svg/north_black_24dp.svg"],
+        [src*="/icons/svg/south_black_24dp.svg"],
+        [src*="/icons/svg/west_black_24dp.svg"],
+        [src*="/icons/svg/east_black_24dp.svg"]
+      )
+  ) {
   background-color: #404649;
   border-radius: 10%;
 }
-/*!CATEGORY Kontrollanzeige*/
 
-/*CATEGORY Verzeichnis*/
-/* Knöpfe */
-:disabled {
-  display: none;
-}
-.hinzufügButton {
-  position: absolute;
-  left: -100px;
-  top: 0px;
-}
-.löschButton {
-  position: absolute;
-  left: -70px;
-  top: 30px;
-}
-/*!CATEGORY Verzeichnis*/
-
-/*CATEGORY Speziel Inhalt*/
-/*Extra datei*/
-.allURLOpen {
-  width: 100px;
-  height: 100%;
-  position: absolute;
-  right: 10px;
-  top: 0px;
-}
-
-/*Japanisch Tabelle*/
-.l1 {
-  background-color: yellowgreen;
-}
-
-.l2 {
-  background-color: aqua;
-}
-
-.l3 {
-  background-color: tomato;
-}
-
-/*Kurz wahl CSS Einstellungen*/
-/*Markierungen*/
-/*Text*/
-.zentrieren {
-  text-align: center;
-}
-
-/*Testfarbe*/
-
-.Unwichtig {
-  color: rgba(0, 0, 0, 0.5);
-}
-
-/*Spezifisch*/
-.Attribut {
-  color: rgb(179, 144, 47);
-}
-
-.Element {
-  color: rgb(36, 99, 181);
-}
-
-.green {
-  color: rgba(41, 206, 47);
-}
-
-.red {
-  color: red;
-}
-
-.coment {
-  background-color: #0f364972;
-}
-
-/*Link Färbung*/
-a:is([href*='w3schools'], [href*='selfhtml'], [href*='mediaevent'], [href*='youtube']) {
-  text-decoration: none;
-}
-a[href*='https://developer.android.com']
-{
-  text-decoration: underline;
-  font-weight: 600;
-  color: rgb(24, 186, 67);
-}
-/*Farbe*/
-a[href*='https://www.w3schools.com/']
-{
-  color: chartreuse;
-}
-a[href*='https://www.geeksforgeeks.org/']
-{
-  font-weight: 600;
-  color: rgb(4, 40, 13);
-}
-a[href*='https://wiki.selfhtml.org']
-{
-  color: #1f98d4;
-}
-a[href*='https://developer.mozilla.org']
-{
-  color: rgb(77, 26, 26);
-}
-a[href*='https://www.mediaevent.de/']
-{
-  color: rgb(200, 96, 23);
-}
-a[href*='https://www.youtube.com/']
-{
-  color: rgb(239, 5, 5);
-}
-a[href*='https://www.youtube.com/results?search_query=']::before
-{
-  content: 'YouTube: ';
-  color: rgb(239, 5, 5);
-  font-weight: 600;
-}
-
-a[href*='https://www.google.com/']::before
-{
-  content: 'Google: ';
-  color: rgb(5, 149, 239);
-  font-weight: 600;
-}
-
-a[href*='.wikipedia.org/']::before {
-  content: 'Wikipedia: ';
-  color: rgb(21, 107, 161);
-  font-weight: 600;
-}
-
-/*Tabellen link*/
-:is(caption, th) a {
-  background-color: #ffffff;
-  border-radius: 5px;
-  padding: 5px;
-}
-
-/*Vorgefertigte CSS Einstellungen*/
-
-@media screen and (min-width: 62rem) {
-  main {
-    width: 90%;
-    margin-left: calc((100% - 62rem) / 2);
-    max-width: 62rem;
-  }
-}
-/*TODO Richtig einfügen*/
-
-.unterwahl {
-  background-color: rgb(55, 188, 237);
-}
-/*Verstecht*/
-/*Themen*/
-.wahl ul {
-  display: inline;
-  justify-content: normal;
-  align-items: normal;
-  list-style: none;
-  flex-wrap: wrap;
-  margin: 0;
-  padding: 0;
-}
-
-.wahl li {
-  margin: 0;
-  background-color: black;
-  color: white;
-  border-style: solid;
-  border-color: white;
-}
-
-.wahl {
-  position: relative;
-}
-
-.wahl div {
-  display: none;
-  position: absolute;
-  width: 100%;
-  height: 300px;
-  overflow: scroll;
-  z-index: 2;
-}
-
-::-webkit-scrollbar {
-  width: 0px;
-}
-
-.wahl:hover div {
-  display: block;
-}
-
-/*Bilder einstellung*/
-
-td img {
-  height: 35px;
-  width: 35px;
-  position: relative;
-  top: 10px;
-}
-
-img {
-  width: 100%;
-  height: 100%;
-}
-svg {
-  border: 5px solid black;
-}
-#Italienisch {
-  background-color: red;
-}
-/*Youtube Playlisten suchcode*/
-
-#copiebutton {
-  width: 100%;
-  height: 100px;
-  background-color: #66b8e1;
-  font-size: 40px;
-}
-/*!CATEGORY Speziel Inhalt*/
-/*Teste Code*/
-
-/*Link suche
-  a[href*="https://www.minimed.at/medizinische-themen/stoffwechsel-verdauung/mineralstoffe/#:~:text=Spurenelemente%20sind%20Chrom%2C%20Eisen%2C%20Fluor,Nickel%2C%20Silicium%20und%20Vanadium%20dazu."]
-  {
-    background-color: red;
-  }
-  a[href*="https://eatsmarter.de/thema/mineralstoffe/mineralstoffe-tabelle"]
-  {
-    background-color: blue;
-  }
-  a[href*="https://www.klartext-nahrungsergaenzung.de/wissen/lebensmittel/nahrungsergaenzungsmittel/mindestmengen-so-viel-von-vitaminen-oder-mineralstoffen-muss-drin-sein-39095"]
-  {
-    background-color: green;
-  }
-  a[href*="https://fet-ev.eu/biotin/"]
-  {
-    background-color: yellow;
-  }
-  a[href*="https://www.navigator-medizin.de/gesundheitsthemen/vitamine/vitamin-b/vitamin-b4.html"]
-  {
-    background-color: purple;
-  }
-  a[href*="https://www.spektrum.de/lexikon/geowissenschaften/naehrelemente/10924"]
-  {
-    background-color: violet;
-  }
-
-  /*Schluss*/
-
-/*Verstecht*/
-/*Themen*/
-/* Test */
-.testDiv {
-  border: red 10px solid;
-  margin-top: 30px;
-}
+/* ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????? */
