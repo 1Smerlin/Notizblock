@@ -165,7 +165,7 @@ Die verschiedenen Reiter sind:
 
 1. Bild
 
-- Beendet die überarbeitung und speichert die seite genaus so wie sie ist (auch offene eingabe felder, **Noch in bearbeitung**)
+- Beendet die überarbeitung und speichert die seite genaus so wie sie ist
 
 2. Bild
 
@@ -247,7 +247,7 @@ Es gibt 2 verschiedene seiten. "Themen" und "Unterkategorien".
 
 # Anmerkungen
 
-Dieses Informations block war von mir nur dafür gedacht schell und übersichtlich Informationen zu speichern.  
+Dieses Informations block war von mir nur dafür gedacht schnell und übersichtlich Informationen zu speichern.  
 Weshalb ich nicht ein fertiges tool anwende???  
 \*\*Weil jedes programm was ich jemals nutzte hatte ein defizieht.
 Mein Progamm ist nicht mal ansatzweiße perfekt, aber was mir nicht gefählt kann ich verändern weil es mein progamm ist.
