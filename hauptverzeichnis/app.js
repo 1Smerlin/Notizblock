@@ -1,10 +1,12 @@
 //Werte
 main = document.querySelector("main");
+PORT = 8000;
 
 //Code
 loadPage();
 function loadPage() {
   navigation();
+  cssOverflow();
   newBoxen();
   controlBar();
   boxBarSytem();
@@ -63,7 +65,6 @@ function navigation() {
     //ANCHOR Hauptfunction
     if (ausgabe[0] === "hauptverzeichnis") {
       header = document.createElement("header");
-      console.log(pfad.split("/").length - 1);
       for (let i = 0; i < pfad.split("/").length - 1; i++) {
         switch (i) {
           case 0:
@@ -86,21 +87,6 @@ function navigation() {
             continue;
           case 3:
             //4 Leiste
-            console.log(ausgabe[i + 1]);
-            console.log(navlist[ausgabe[i - 2]][2]);
-            console.log(navlist[ausgabe[i - 2]][2][ausgabe[i - 1]]);
-            console.log(navlist[ausgabe[i - 2]][2][ausgabe[i - 1]][2]);
-            console.log(
-              navlist[ausgabe[i - 2]][2][ausgabe[i - 1]][2][ausgabe[i]]
-            );
-            console.log(
-              navlist[ausgabe[i - 2]][2][ausgabe[i - 1]][2][ausgabe[i]][2]
-            );
-            console.log(
-              navlist[ausgabe[i - 2]][2][ausgabe[i - 1]][2][ausgabe[i]][2] ===
-                undefined
-            );
-            console.log(ausgabe[i]);
             if (
               navlist[ausgabe[i - 2]][2][ausgabe[i - 1]][2][ausgabe[i]] !==
               undefined
@@ -164,6 +150,23 @@ function navigation() {
     }
   }
 }
+function cssOverflow() {
+  setInterval(() => {
+    let allElement = document.body.querySelectorAll("*");
+    for (let i = allElement.length - 1; i >= 0; i--) {
+      if (allElement[i].style.wordBreak === "break-all") {
+        allElement[i].style.wordBreak = "initial";
+      }
+      if (
+        allElement[i].scrollWidth > allElement[i].clientWidth ||
+        allElement[i].scrollHeight > allElement[i].clientHeight
+      ) {
+        allElement[i].style.wordBreak = "break-all";
+      }
+    }
+  }, 1000);
+}
+
 function controlBar() {
   console.log("!!!---controlBar---!!!");
   const controller = document.createElement("div");
@@ -227,7 +230,6 @@ function controlBar() {
 // NewBoxen System
 function newBoxen() {
   allDivs = main.getElementsByTagName("div");
-  console.log(allDivs);
   for (let i = 0; i < allDivs.length; i++) {
     allDivs[i].style.display = "none";
   }
@@ -250,7 +252,6 @@ function newBoxen() {
   });
   function Boxen(e) {
     console.log("!!!---Boxen---!!!");
-    console.log(e);
     if (e.target.nextElementSibling.style.display === "none") {
       e.target.nextElementSibling.style.display = "";
       if (e.target.nextElementSibling.style.length === 0) {
@@ -322,7 +323,6 @@ function openOverwriteOption(Element) {
 //Overwrite navigation
 function windowsItemSelection(e) {
   console.log("!!!---windowsItemSelection---!!!");
-  console.log(e);
   if (document.getElementById("ElementSeletction") !== null) {
     controller.removeChild(document.getElementById("ElementSeletction"));
   }
@@ -336,9 +336,6 @@ function windowsItemSelection(e) {
   let table = document.createElement("table");
   table.id = "ElementSeletction";
   let caption = document.createElement("caption");
-  console.log("!!!---test---!!!");
-  console.log(FocusElement);
-  console.log(FocusElement.tagName);
   caption.innerText = FocusElement.tagName;
   let tbody = document.createElement("tbody");
   let tr = document.createElement("tr");
@@ -357,9 +354,6 @@ function windowsItemSelection(e) {
   tbody.appendChild(tr);
   table.appendChild(caption);
   table.appendChild(tbody);
-  console.log(FocusElement);
-  console.log(FocusElement.parentElement);
-  console.log(FocusElement.parentElement.tagName);
   if (FocusElement.parentElement.tagName !== "BODY") {
     let tfoot = document.createElement("tfoot");
     tr = document.createElement("tr");
@@ -379,7 +373,6 @@ function focusMovFunc(position) {
     .getElementById("ElementSeletction")
     .addEventListener("click", (e) => {
       console.log("!!!---click---!!!");
-      console.log(e);
       if (e.target.matches("li")) {
         if (e.target.classList.contains("Focus2")) {
           liPosition = Array.prototype.slice
@@ -388,7 +381,6 @@ function focusMovFunc(position) {
           let targetedItem = FocusElement.children[liPosition];
           if (targetedItem.style.length < 2) {
             targetedItem.removeAttribute("style");
-            console.log(targetedItem);
           } else {
             targetedItem.style.opacity = "";
           }
@@ -424,7 +416,6 @@ function focusMovFunc(position) {
         if (e.target.innerText === "Zurück") {
           if (FocusElement.parentElement.style.length < 2) {
             FocusElement.parentElement.removeAttribute("style");
-            console.log(FocusElement.parentElement);
           } else {
             FocusElement.parentElement.style.opacity = "";
           }
@@ -643,12 +634,9 @@ function ElementOptionFunc() {
     }
     if (e.target.matches("th")) {
       console.log("!!!---ElementOption tabelle---!!!");
-      console.log(e.target);
       let nextElementOption =
         e.target.parentElement.nextElementSibling.firstChild;
-      console.log(nextElementOption.tagName);
       while (nextElementOption.tagName === "TD") {
-        console.log(nextElementOption.tagName);
         if (nextElementOption.parentElement.style.display === "none") {
           nextElementOption.parentElement.style.display = "";
           if (nextElementOption.parentElement.style.length === 0) {
@@ -679,8 +667,6 @@ function ElementOptionFunc() {
           openOption += 1;
         }
       }
-      console.log("closeOption " + closeOption);
-      console.log("openOption " + openOption);
       let options = e.target.parentElement.getElementsByTagName("td");
       if (closeOption > openOption) {
         for (let i = 0; i < options.length; i++) {
@@ -720,7 +706,6 @@ function textWriteCancel(exception) {
 }
 function textWriteFinish(button) {
   console.log("!!!---textWriteFinish---!!!");
-  console.log(FocusElement);
   FocusElement.innerText = button.parentElement.querySelector("textarea").value;
   document.getElementById("TextInput").replaceWith(FocusElement);
   if (typeof jumpTo !== "undefined" && jumpTo.length > 0) {
@@ -758,7 +743,6 @@ function writeCancel(exception) {
 }
 function writeFinish(button) {
   console.log("!!!---writeFinish---!!!");
-  console.log(FocusElement);
   FocusElement.innerHTML = button.parentElement.querySelector("textarea").value;
   document.getElementById("HTMLInput").replaceWith(FocusElement);
   if (typeof jumpTo !== "undefined" && jumpTo.length > 0) {
@@ -887,9 +871,7 @@ function pushElement(button) {
   textContent.replace(' class="Focus"', "");
   let range = document.createRange();
   let textElement = range.createContextualFragment(textContent);
-  console.log(textElement);
   button.parentElement.replaceWith(textElement);
-  console.log(FocusElement);
   windowsItemSelection(FocusElement);
   /*
   <tr class="Focus" style="">
@@ -908,8 +890,6 @@ function pushElement(button) {
 // delete
 function overwriteDelete(button) {
   console.log("!!!---overwriteDelete---!!!");
-  console.log(FocusElement);
-  console.log(button);
   let GoBack = FocusElement.parentElement;
   if (button === undefined) {
     if (
@@ -1346,7 +1326,6 @@ function ElementOptionTD(button) {
     let td = document.createElement("td");
     jumpTo.push([td, 1]);
   }
-  console.log(jumpTo);
   if (
     document
       .getElementById("ElementSeletction")
@@ -1367,12 +1346,7 @@ function ElementOptionTD(button) {
           .getElementById("ElementSeletction")
           .getElementsByClassName("Focus2")[0]
       );
-    console.log(ListLengthNumber);
-    console.log(jumpTo[ListLengthNumber - 1][0]);
     for (let i = ListLengthNumber - 1; i >= 0; i--) {
-      console.log(
-        ListLengthNumber + " - " + i + " = " + (ListLengthNumber - i)
-      );
       console.count("runde");
       FocusElement.children[Focus2Number].insertAdjacentElement(
         "beforebegin",
@@ -1416,7 +1390,6 @@ function ElementOptionTH(button) {
     let th = document.createElement("th");
     jumpTo.push([th, 1]);
   }
-  console.log(jumpTo);
   if (
     document
       .getElementById("ElementSeletction")
@@ -1437,12 +1410,7 @@ function ElementOptionTH(button) {
           .getElementById("ElementSeletction")
           .getElementsByClassName("Focus2")[0]
       );
-    console.log(ListLengthNumber);
-    console.log(jumpTo[ListLengthNumber - 1][0]);
     for (let i = ListLengthNumber - 1; i >= 0; i--) {
-      console.log(
-        ListLengthNumber + " - " + i + " = " + (ListLengthNumber - i)
-      );
       console.count("runde");
       FocusElement.children[Focus2Number].insertAdjacentElement(
         "beforebegin",
@@ -1521,7 +1489,6 @@ function ElementOptionA() {
       break;
     }
   }
-  console.log(attributeButton[attributeButtonPosition]);
   attributeButton[attributeButtonPosition].click();
 }
 function ElementOptionP() {
@@ -1737,9 +1704,7 @@ function ElementOptionTablesColumn() {
     searchedElement = searchedElement.parentElement;
   }
   if (searchedElement.tagName !== "TABLE") {
-    console.log("in Keiner Tabelle");
   } else {
-    console.log("Tabelle vollständig");
     let selectDiv = document.createElement("div");
     selectDiv.id = "selectDiv";
 
@@ -1840,10 +1805,6 @@ function attributeBarFunc() {
     .addEventListener("click", readAttribute);
 }
 function readAttribute(e) {
-  console.log(typeof e);
-  console.log(e);
-  console.log(typeof e.target);
-  console.log(e.target);
   if (e.target.matches("td")) {
     if (e.target.classList.contains("Focus")) {
       attributeCancel();
@@ -1854,7 +1815,6 @@ function readAttribute(e) {
           .getElementById("attributeBar")
           .lastElementChild.lastElementChild.classList.contains("Focus")
       ) {
-        console.log("Ist nicht Lösch");
         if (document.getElementById("attributeBox") === null) {
           e.target.classList.add("Focus");
           //New Code
@@ -1891,12 +1851,10 @@ function readAttribute(e) {
           }
         }
       } else {
-        console.log("Ist Lösch");
         if (!e.target.classList.contains("Focus")) {
           e.target.classList.add("Focus");
         }
         if (e.target.innerText !== "Löschen") {
-          console.log(e.target.innerText);
           document
             .getElementById("attributeBar")
             .querySelector(".Focus")
@@ -1928,15 +1886,19 @@ function attributeValidate() {
     document.getElementById("attributeBar").querySelector(".Focus")
       .innerText !== "Hinzufügen"
   ) {
-    console.log("Verändern");
     if (document.getElementById("attributeInput").value !== "") {
       let wert = document.getElementById("attributeInput").value;
       let attributeName = document
         .getElementById("attributeBar")
         .querySelector(".Focus").innerText;
-      console.log(attributeName);
-      console.log(wert);
-      console.log(FocusElement);
+      let pfadSearch =
+        window.location.protocol +
+        "//" +
+        window.location.host +
+        window.location.pathname.slice(0, 18);
+      if (attributeName === "href" && wert.includes(pfadSearch)) {
+        wert = wert.replace(pfadSearch, "../");
+      }
       FocusElement.setAttribute(attributeName, wert);
       attributeCancel();
       document
@@ -1945,13 +1907,8 @@ function attributeValidate() {
       attributeBar();
     }
   } else {
-    console.log("Hinzufügen");
-    console.log(document.getElementById("attributeInput"));
     if (document.getElementById("attributeInput").value !== "") {
-      console.log("Hinzufügen2");
       let wert = document.getElementById("attributeInput").value;
-      console.log(wert);
-      console.log(seekFocus());
       seekFocus().setAttribute(wert, "");
       document.getElementById("attributeInput").value = "";
       document
@@ -2027,8 +1984,6 @@ function ElementGoLeftUp() {
     let myElement = document
       .getElementById("ElementSeletction")
       .querySelector("ul").children[Focus2Number - 1];
-    console.log(Focus2Number);
-    console.log(myElement);
     let topPos = myElement.offsetTop;
     document
       .getElementById("ElementSeletction")
@@ -2171,7 +2126,12 @@ function ElementparentGoDown(e) {
 
 function reviseSend() {
   console.log("!!!---reviseSend---!!!");
-  url = window.location.protocol + "//" + window.location.hostname + ":3005";
+  url =
+    window.location.protocol +
+    "//" +
+    window.location.hostname +
+    ":" +
+    (PORT + 5);
   main2 = main.cloneNode(true);
   ExtraButton = Array.prototype.slice.call(
     main2.getElementsByClassName("allURLOpen")
@@ -2195,7 +2155,6 @@ function reviseSend() {
     },
     body: JSON.stringify([window.location.pathname, main2.innerHTML]),
   });
-  // console.log(JSON.stringify([window.location.pathname, main2.innerHTML]))
   fetch(request)
     .then((response) => response.json())
     .then((data) => {
@@ -2238,9 +2197,7 @@ function AllKeys(key, pop, number) {
     keylength = number;
   }
   for (let i = 0; i < keylength; i++) {
-    console.log(i, Object.keys(key)[i]);
     if (pop) {
-      console.log(key[Object.keys(key)[i]]);
     }
   }
 }
@@ -2252,7 +2209,6 @@ function seekFocus() {
     return findFocus;
   } else {
     let findFocus = main.getElementsByClassName("Focus")[0];
-    console.log(findFocus);
     if (findFocus === undefined) {
       findFocus = document.getElementsByClassName("Focus")[0];
       return findFocus;
@@ -2313,82 +2269,26 @@ function writeFieldClose() {
 
 function useKeyButton(keyButton, func1, func2) {
   console.log("!!!!!!_____KEY_____!!!!!!");
-  console.log(keyButton);
-  console.log(func2);
   document.onkeydown = function (e) {
-    console.log("The KEYNAME");
-    console.log(e.code);
     switch (e.code) {
       case "Enter":
         if (!e.shiftKey) {
           // Überprüfen, ob die Shift-Taste nicht gedrückt ist
           e.preventDefault();
-          console.log("Drückt Enter");
           window[func2](keyButton);
         }
         break;
       case "Escape":
         e.preventDefault();
-        console.log("Drückt ESC");
         window[func1](1);
         break;
     }
   };
 }
 
-/*
-document.onkeydown = function (e) {
-  console.log(e)
-  console.log(e.code)
-  if (e.code == 'space') {
-    // Leertaste gedrückt
-    console.log('Dückt Leertaste')
-  }
-
-  if (e.code == 'ArrowUp') {
-    // Nach oben gedrückt
-    console.log('Dückt nach oben')
-  }
-
-  if (e.code == 'ArrowDown') {
-    // Nach unten gedrückt
-    console.log('Dückt nach unten')
-  }
-}
-document.onkeyup = function (e) {
-  console.log(e)
-  if (e.code == 'space') {
-    // Leertaste losgelassen
-    console.log('Loslasen Leertaste')
-  }
-
-  if (e.code == 'ArrowUp') {
-    // Nach oben losgelassen
-    console.log('Loslasen nach oben')
-  }
-
-  if (e.code == 'ArrowDown') {
-    // Nach unten losgelassen
-    console.log('Loslasen nach unten')
-  }
-}
-*/
 function newSpalt(body) {
   for (let i = 0; i < body.children.length; i++) {
     let td = document.createElement("td");
     body.children[i].appendChild(td);
   }
-}
-
-function gibAus() {
-  let text = "Hallo";
-  console.log("text: " + text);
-  let userName = "Rudolf";
-  console.log("userName: " + userName);
-  let zahl1 = 5;
-  let zahl2 = 2;
-  let summe = zahl1 + zahl2;
-  console.log(zahl1 + " + " + zahl2 + " + " + summe);
-  let single = true;
-  console.log("single: " + single);
 }

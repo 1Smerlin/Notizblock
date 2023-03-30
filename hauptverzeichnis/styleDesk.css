@@ -86,25 +86,28 @@
   }
 
   :is(h2, h3, h4) {
-    height: 100;
-    width: 100;
-    margin: 0;
     padding: 0;
     border-width: 5px;
   }
-
-  h2 {
-    margin-bottom: 10px;
+  :is(h2, h3) {
+    margin: 0 0 10px 0;
   }
-
+  :is(h2, h3):has(+ div[style*="display: none;"]) {
+    margin: 0;
+  }
+  :is(h2):has(+ div[style*="display: none;"]) {
+    border-radius: 0 0 50% 50%;
+  }
+  h2 + div {
+    margin-top: 20px;
+  }
   h3 {
     border-radius: 10px;
-    margin-bottom: 10px;
   }
 
   h4 {
     padding-top: 5px;
-    margin-top: 5px;
+    margin: 5px 0 0 0;
     border-radius: 100% 100% 0 0;
   }
   h4:has(+ div[style*="display: none;"]) {
