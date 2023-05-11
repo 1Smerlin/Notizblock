@@ -630,7 +630,8 @@ function newZeileErzeugen(position) {
   window.tr = document.createElement("tr");
   let td = document.createElement("td");
   tr.appendChild(td);
-  for (let i = 1; i < 6; i++) {
+  let columnLength = table.querySelector("thead").firstElementChild.children.length
+  for (let i = 1; i < columnLength; i++) {
     let td = document.createElement("td");
     let hinzufügPosition = document.createElement("button");
     hinzufügPosition.setAttribute(
