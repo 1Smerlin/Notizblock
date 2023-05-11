@@ -1,456 +1,155 @@
-// Debug
-function Test(testMessage) {
-  if (testMessage === undefined) {
-    testMessage = "";
-  } else {
-    testMessage = "-" + testMessage;
-  }
-  console.count("!!!!!----Test" + testMessage + "----!!!!!");
-}
+import {
+  selectionBar,
+  childIndex,
+} from ".././testModule.js";
+// Variablen
+window.selectionBar = selectionBar;
+window.childIndex = childIndex;
+let navlist
 // code
 let request = new XMLHttpRequest();
 request.open("GET", "../verzeichnis.json");
 request.responseType = "text";
 request.send();
 request.onload = function () {
-  let navlist = JSON.parse(request.response);
+  navlist = JSON.parse(request.response);
   fillTable(navlist);
 };
 function fillTable(navlist) {
-  key = Object.keys(navlist);
-  nummer = 1;
-  table = document.getElementById("Verzeichnis");
+  window.table = document.getElementById("Verzeichnis");
+  window.tbody = table.querySelector("tbody")
+  window.nummer = 0;
+  window.spalten = 0;
+  window.columnLength = 0
+  window.allClass = []
   // Tabelle Füllen
+  buildFolderStructure(tbody, navlist, spalten)
+  klapBox();
+}
+
+
+function rowsNumber(nummer) {
+  let tr = document.createElement("tr");
+  let td = document.createElement("td");
+  td.innerHTML = nummer;
+  tr.appendChild(td);
+  return tr
+}
+function newRows(row, spalte, name, url, unterwahl = 0) {
+  // Zahl
+  let tr = rowsNumber(row)
+  // An Leere td
+  for (let z = 0; z < spalte - 1; z++) {
+    let td = document.createElement("td");
+    tr.appendChild(td);
+  }
+  //Unterwahl
+  let td = document.createElement("td");
+  let a = document.createElement("a");
+  a.innerHTML = name;
+  a.setAttribute("href", "../" + url);
+  if (!unterwahl) {
+    allClass.splice(spalte - 1);
+    allClass.push(filter3(name));
+  }
+  td.setAttribute("ondblclick", "option(this)");
+  if (unterwahl) {
+    td.classList.add("unterwahl");
+  }
+  allClass.forEach(e => {
+    td.classList.add(e);
+  });
+  if (unterwahl) {
+    td.classList.add(filter2(name));
+  }
+  td.appendChild(a);
+  tr.appendChild(td);
+  // An Leere td
+  for (let z = 0; z < columnLength - spalte; z++) {
+    let td = document.createElement("td");
+    tr.appendChild(td);
+  }
+  return tr
+}
+function buildFolderStructure(tbody, navlist, spalten) {
+  // 1 Reihe
+  var key = Object.keys(navlist);
   for (let i of key) {
-    // 1 Reihe
-    // Zahl
-    tr = document.createElement("tr");
-    td = document.createElement("td");
-    td.innerHTML = nummer;
-    tr.appendChild(td);
-    // 1 Reihe
-    td = document.createElement("td");
-    a = document.createElement("a");
-    a.innerHTML = navlist[i][0];
-    a.setAttribute("href", "../" + navlist[i][1]);
-    i1 = filter3(navlist[i][0]);
-    td.setAttribute("ondblclick", "option('" + i1 + "', " + nummer + ")");
-    td.classList.add(i1);
-    td.appendChild(a);
-    tr.appendChild(td);
-    // End Leere td
-    for (let z = 0; z < 4; z++) {
-      let td = document.createElement("td");
-      tr.appendChild(td);
-    }
-    table.appendChild(tr);
+    // create row
     nummer += 1;
+    let newspalten = spalten + 1
+    if (columnLength < newspalten) {
+      columnLength = newspalten
+      fillTbody()
+    }
+    let tr = newRows(nummer, newspalten, navlist[i][0], navlist[i][1])
+    tbody.appendChild(tr);
     if (navlist[i][3].length !== 0) {
       for (let z = 0; z < navlist[i][3].length; z++) {
-        // Zahl
-        tr = document.createElement("tr");
-        td = document.createElement("td");
-        td.innerHTML = nummer;
-        tr.appendChild(td);
-        // An Leere td
-        for (let z = 0; z < 1; z++) {
-          let td = document.createElement("td");
-          tr.appendChild(td);
+        // create row
+        if (columnLength < newspalten + 1) {
+          columnLength = newspalten + 1
+          fillTbody()
         }
-        //Unterwahl
-        td = document.createElement("td");
-        a = document.createElement("a");
-        a.innerHTML = navlist[i][3][z][0];
-        a.setAttribute("href", "../" + navlist[i][3][z][1]);
-        td.setAttribute(
-          "ondblclick",
-          "option('" +
-            filter2(navlist[i][3][z][0]) +
-            "', " +
-            nummer +
-            ", 'unterwahl')"
-        );
-        td.setAttribute("class", "unterwahl");
-        td.classList.add(i1, filter2(navlist[i][3][z][0]));
-        td.appendChild(a);
-        tr.appendChild(td);
-        // End Leere td
-        for (let z = 0; z < 3; z++) {
-          let td = document.createElement("td");
-          tr.appendChild(td);
-        }
-        table.appendChild(tr);
         nummer += 1;
+        let tr = newRows(nummer, newspalten + 1, navlist[i][3][z][0], navlist[i][3][z][1], 1)
+        tbody.appendChild(tr);
       }
     }
     if (
       Object.keys(navlist[i][2]).length !== 0 &&
       Object.keys(navlist[i][2]).length !== undefined
     ) {
-      // 2 Reihe
-      key1 = Object.keys(navlist[i][2]);
-      for (let j of key1) {
-        // Zahl
-        tr = document.createElement("tr");
-        td = document.createElement("td");
-        td.innerHTML = nummer;
-        tr.appendChild(td);
-        // An Leere td
-        for (let z = 0; z < 1; z++) {
-          let td = document.createElement("td");
-          tr.appendChild(td);
-        }
-        //Kategorie
-        td = document.createElement("td");
-        a = document.createElement("a");
-        a.innerHTML = navlist[i][2][j][0];
-        a.setAttribute("href", "../" + navlist[i][2][j][1]);
-        j1 = filter3(navlist[i][2][j][0]);
-        td.setAttribute("ondblclick", "option('" + j1 + "', " + nummer + ")");
-        td.classList.add(i1, j1);
-        td.appendChild(a);
-        tr.appendChild(td);
-        // End Leere td
-        for (let z = 0; z < 3; z++) {
-          let td = document.createElement("td");
-          tr.appendChild(td);
-        }
-        table.appendChild(tr);
-        nummer += 1;
-        if (navlist[i][2][j][3].length !== 0) {
-          for (let z = 0; z < navlist[i][2][j][3].length; z++) {
-            // Zahl
-            tr = document.createElement("tr");
-            td = document.createElement("td");
-            td.innerHTML = nummer;
-            tr.appendChild(td);
-            // An Leere td
-            for (let z = 0; z < 2; z++) {
-              let td = document.createElement("td");
-              tr.appendChild(td);
-            }
-            //Unterwahl
-            td = document.createElement("td");
-            a = document.createElement("a");
-            a.innerHTML = navlist[i][2][j][3][z][0];
-            a.setAttribute("href", "../" + navlist[i][2][j][3][z][1]);
-            td.setAttribute(
-              "ondblclick",
-              "option('" +
-                filter2(navlist[i][2][j][3][z][0]) +
-                "', " +
-                nummer +
-                ", 'unterwahl')"
-            );
-            td.setAttribute("class", "unterwahl");
-            td.classList.add(i1, j1, filter2(navlist[i][2][j][3][z][0]));
-            td.appendChild(a);
-            tr.appendChild(td);
-            // End Leere td
-            for (let z = 0; z < 2; z++) {
-              let td = document.createElement("td");
-              tr.appendChild(td);
-            }
-            table.appendChild(tr);
-            nummer += 1;
-          }
-        }
-        if (
-          Object.keys(navlist[i][2][j][2]).length !== 0 &&
-          Object.keys(navlist[i][2][j][2]).length !== undefined
-        ) {
-          // 3 Reihe
-          key2 = Object.keys(navlist[i][2][j][2]);
-          for (let k of key2) {
-            // Zahl
-            tr = document.createElement("tr");
-            td = document.createElement("td");
-            td.innerHTML = nummer;
-            tr.appendChild(td);
-            // An Leere td
-            for (let z = 0; z < 2; z++) {
-              let td = document.createElement("td");
-              tr.appendChild(td);
-            }
-            td = document.createElement("td");
-            a = document.createElement("a");
-            a.innerHTML = navlist[i][2][j][2][k][0];
-            a.setAttribute("href", "../" + navlist[i][2][j][2][k][1]);
-            k1 = filter3(navlist[i][2][j][2][k][0]);
-            td.setAttribute(
-              "ondblclick",
-              "option('" + k1 + "', " + nummer + ")"
-            );
-            td.classList.add(i1, j1);
-            if (k1 === "Elektro-Technik") {
-              td.classList.add("Elektro-Technik");
-            } else {
-              td.classList.add(k1);
-            }
-            td.appendChild(a);
-            tr.appendChild(td);
-            // End Leere td
-            for (let z = 0; z < 2; z++) {
-              let td = document.createElement("td");
-              tr.appendChild(td);
-            }
-            table.appendChild(tr);
-            nummer += 1;
-            if (navlist[i][2][j][2][k][3].length !== 0) {
-              for (let z = 0; z < navlist[i][2][j][2][k][3].length; z++) {
-                // Zahl
-                tr = document.createElement("tr");
-                td = document.createElement("td");
-                td.innerHTML = nummer;
-                tr.appendChild(td);
-                // An Leere td
-                for (let z = 0; z < 3; z++) {
-                  let td = document.createElement("td");
-                  tr.appendChild(td);
-                }
-                //Unterwahl
-                td = document.createElement("td");
-                a = document.createElement("a");
-                a.innerHTML = navlist[i][2][j][2][k][3][z][0];
-                a.setAttribute("href", "../" + navlist[i][2][j][2][k][3][z][1]);
-                td.setAttribute(
-                  "ondblclick",
-                  "option('" +
-                    filter2(navlist[i][2][j][2][k][3][z][0]) +
-                    "', " +
-                    nummer +
-                    ", 'unterwahl')"
-                );
-                td.setAttribute("class", "unterwahl");
-                td.classList.add(
-                  i1,
-                  j1,
-                  k1,
-                  filter2(navlist[i][2][j][2][k][3][z][0])
-                );
-                td.appendChild(a);
-                tr.appendChild(td);
-                // End Leere td
-                for (let z = 0; z < 1; z++) {
-                  let td = document.createElement("td");
-                  tr.appendChild(td);
-                }
-                table.appendChild(tr);
-                nummer += 1;
-              }
-            }
-            if (
-              Object.keys(navlist[i][2][j][2][k][2]).length !== 0 &&
-              Object.keys(navlist[i][2][j][2][k][2]).length !== undefined
-            ) {
-              // 4 Reihe
-              key3 = Object.keys(navlist[i][2][j][2][k][2]);
-              for (let l of key3) {
-                // Zahl
-                tr = document.createElement("tr");
-                td = document.createElement("td");
-                td.innerHTML = nummer;
-                tr.appendChild(td);
-                // An Leere td
-                for (let z = 0; z < 3; z++) {
-                  let td = document.createElement("td");
-                  tr.appendChild(td);
-                }
-                td = document.createElement("td");
-                a = document.createElement("a");
-                a.innerHTML = navlist[i][2][j][2][k][2][l][0];
-                a.setAttribute("href", "../" + navlist[i][2][j][2][k][2][l][1]);
-                l1 = filter3(navlist[i][2][j][2][k][2][l][0]);
-                td.setAttribute(
-                  "ondblclick",
-                  "option('" + l1 + "', " + nummer + ")"
-                );
-                td.classList.add(i1, j1, k1, l1);
-                td.appendChild(a);
-                tr.appendChild(td);
-                // End Leere td
-                for (let z = 0; z < 1; z++) {
-                  let td = document.createElement("td");
-                  tr.appendChild(td);
-                }
-                table.appendChild(tr);
-                nummer += 1;
-                if (navlist[i][2][j][2][k][2][l][3].length !== 0) {
-                  for (
-                    let z = 0;
-                    z < navlist[i][2][j][2][k][2][l][3].length;
-                    z++
-                  ) {
-                    // Zahl
-                    tr = document.createElement("tr");
-                    td = document.createElement("td");
-                    td.innerHTML = nummer;
-                    tr.appendChild(td);
-                    // An Leere td
-                    for (let z = 0; z < 4; z++) {
-                      let td = document.createElement("td");
-                      tr.appendChild(td);
-                    }
-                    //Unterwahl
-                    td = document.createElement("td");
-                    a = document.createElement("a");
-                    a.innerHTML = navlist[i][2][j][2][k][2][l][3][z][0];
-                    a.setAttribute(
-                      "href",
-                      "../" + navlist[i][2][j][2][k][2][l][3][z][1]
-                    );
-                    td.setAttribute(
-                      "ondblclick",
-                      "option('" +
-                        filter2(navlist[i][2][j][2][k][2][l][3][z][0]) +
-                        "', " +
-                        nummer +
-                        ", 'unterwahl')"
-                    );
-                    td.setAttribute("class", "unterwahl");
-                    td.classList.add(
-                      i1,
-                      j1,
-                      k1,
-                      l1,
-                      filter2(navlist[i][2][j][2][k][2][l][3][z][0])
-                    );
-                    td.appendChild(a);
-                    tr.appendChild(td);
-                    // End Leere td
-                    for (let z = 0; z < 0; z++) {
-                      let td = document.createElement("td");
-                      tr.appendChild(td);
-                    }
-                    table.appendChild(tr);
-                    nummer += 1;
-                  }
-                }
-                if (
-                  Object.keys(navlist[i][2][j][2][k][2][l][2]).length !== 0 &&
-                  Object.keys(navlist[i][2][j][2][k][2][l][2]).length !==
-                    undefined
-                ) {
-                  // 5 Reihe
-                  key4 = Object.keys(navlist[i][2][j][2][k][2][l][2]);
-                  for (let e of key4) {
-                    // Zahl
-                    tr = document.createElement("tr");
-                    td = document.createElement("td");
-                    td.innerHTML = nummer;
-                    tr.appendChild(td);
-                    // An Leere td
-                    for (let z = 0; z < 4; z++) {
-                      let td = document.createElement("td");
-                      tr.appendChild(td);
-                    }
-                    td = document.createElement("td");
-                    a = document.createElement("a");
-                    a.innerHTML = navlist[i][2][j][2][k][2][l][2][e][0];
-                    a.setAttribute(
-                      "href",
-                      "../" + navlist[i][2][j][2][k][2][l][2][e][1]
-                    );
-                    e1 = filter3(navlist[i][2][j][2][k][2][l][2][e][0]);
-                    td.setAttribute(
-                      "ondblclick",
-                      "option('" + e1 + "', " + nummer + ")"
-                    );
-                    td.classList.add(i1, j1, k1, l1, e1);
-                    td.appendChild(a);
-                    tr.appendChild(td);
-                    // End Leere td
-                    for (let z = 0; z < 0; z++) {
-                      let td = document.createElement("td");
-                      tr.appendChild(td);
-                    }
-                    table.appendChild(tr);
-                    nummer += 1;
-                    if (navlist[i][2][j][2][k][2][l][2][e][3].length !== 0) {
-                      for (
-                        let z = 0;
-                        z < navlist[i][2][j][2][k][2][l][2][e][3].length;
-                        z++
-                      ) {
-                        // Zahl
-                        tr = document.createElement("tr");
-                        td = document.createElement("td");
-                        td.innerHTML = nummer;
-                        tr.appendChild(td);
-                        // An Leere td
-                        for (let z = 0; z < 5; z++) {
-                          let td = document.createElement("td");
-                          tr.appendChild(td);
-                        }
-                        //Unterwahl
-                        td = document.createElement("td");
-                        a = document.createElement("a");
-                        a.innerHTML =
-                          navlist[i][2][j][2][k][2][l][2][e][3][z][0];
-                        a.setAttribute(
-                          "href",
-                          "../" + navlist[i][2][j][2][k][2][l][2][e][3][z][1]
-                        );
-                        td.setAttribute(
-                          "ondblclick",
-                          "option('" +
-                            filter2(
-                              navlist[i][2][j][2][k][2][l][2][e][3][z][0]
-                            ) +
-                            "', " +
-                            nummer +
-                            ", 'unterwahl')"
-                        );
-                        td.setAttribute("class", "unterwahl");
-                        td.classList.add(
-                          i1,
-                          j1,
-                          k1,
-                          l1,
-                          e1,
-                          filter2(navlist[i][2][j][2][k][2][l][2][e][3][z][0])
-                        );
-                        td.appendChild(a);
-                        tr.appendChild(td);
-                        // End Leere td
-                        for (let z = 0; z < 0; z++) {
-                          let td = document.createElement("td");
-                          tr.appendChild(td);
-                        }
-                        table.appendChild(tr);
-                        nummer += 1;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      buildFolderStructure(tbody, navlist[i][2], newspalten)
     }
   }
-  klapBox();
 }
+function fillTbody() {
+  let th = document.createElement("th");
+  th.innerText = table.querySelector("thead").firstElementChild.children.length
+  table.querySelector("thead").firstElementChild.appendChild(th);
+  for (let i = 0; i < tbody.children.length; i++) {
+    let td = document.createElement("td");
+    tbody.children[i].appendChild(td);
+  };
+}
+function cutTbody() {
+  let emptyTDs
+  do {
+    emptyTDs = true
+    for (let i = 0; i < tbody.children.length; i++) {
+      if (tbody.children[i].querySelectorAll("td")[tbody.children[i].querySelectorAll("td").length - 1].innerHTML !== "") {
+        emptyTDs = false
+        break
+      }
+    }
+    if (emptyTDs) {
+      table.querySelector("thead").firstElementChild.lastElementChild.remove()
+      for (let i = 0; i < tbody.children.length; i++) {
+        tbody.children[i].querySelectorAll("td")[tbody.children[i].querySelectorAll("td").length - 1].remove()
+      };
+    }
+  } while (emptyTDs)
+}
+
 function klapBox() {
   console.log("!!!---klapBox---!!!");
   // Über und Unterkatergorie
-  allTr = table.querySelectorAll("tr");
-  allTd = table.querySelectorAll("td[class]");
-  for (let i = 1; i < allTr.length; i++) {
+  let allTr = tbody.querySelectorAll("tr");
+  for (let i = 0; i < allTr.length; i++) {
     //Nummerierung
-    allTr[i].firstChild.innerHTML = i;
+    allTr[i].firstChild.innerHTML = i + 1;
     if (allTr[i].querySelector("td[class]") !== null) {
       if (
-        table.getElementsByClassName(
+        tbody.getElementsByClassName(
           allTr[i].querySelector("td[class]").classList[
-            allTr[i].querySelector("td[class]").classList.length - 1
+          allTr[i].querySelector("td[class]").classList.length - 1
           ]
         ).length !== 1
       ) {
-        nummerTd = allTr[i].firstChild;
+        let nummerTd = allTr[i].firstChild;
         // Klappzeichen
-        img = document.createElement("img");
+        let img = document.createElement("img");
         img.setAttribute("src", "../../icons/svg/expand_more_black_24dp.svg");
         nummerTd.appendChild(img);
         nummerTd.setAttribute(
@@ -461,8 +160,8 @@ function klapBox() {
     }
   }
 }
+window.klap = klap
 function klap(klasse) {
-  console.log("klap");
   katego = document.getElementsByClassName(klasse);
   if (katego[1].parentElement.hasAttribute("style") === false) {
     for (let i = 1; i < katego.length; i++) {
@@ -495,15 +194,20 @@ function klap(klasse) {
   }
 }
 
-memory = {};
+let memory = {};
 //STEP Öffnet optionen
-function option(klasse, position, art) {
-  console.log("!!!---option---!!!");
+window.option = option
+function option(e) {
+  console.log("!!!---option---!!!")
+  let klasse = e.classList[e.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(e.parentElement)
+  let art
+  if (e.classList[0] === "unterwahl") {
+    art = "unterwahl"
+  }
   //Werte
-  AktuelTd = table
-    .getElementsByTagName("tr")
-    [position].querySelector('td[class*="' + klasse + '"]');
-  AktuelTr = AktuelTd.parentElement;
+  window.AktuelTd = tbody.getElementsByTagName("tr")[position].querySelector('td[class*="' + klasse + '"]');
+  window.AktuelTr = AktuelTd.parentElement;
   // Start Funktionen
   AktuelTd.removeAttribute("ondblclick");
   AktuelTd.setAttribute("style", "position: relative");
@@ -529,7 +233,7 @@ function eingabe(AktuelTd, klasse, art) {
   console.log("!!!---eingabe---!!!");
   //Eingabefeld Erzeugen
   //Name
-  textarea = document.createElement("textarea");
+  let textarea = document.createElement("textarea");
   textarea.setAttribute(
     "style",
     "resize: none; box-sizing: border-box; margin: 0px; height: 100%; width: 100%;"
@@ -539,7 +243,7 @@ function eingabe(AktuelTd, klasse, art) {
   //Test Einfügen
   if (AktuelTd.querySelectorAll("a").length) {
     textarea.innerText = AktuelTd.innerText;
-    memory[AktuelTd.innerText] = [AktuelTd.innerText, art];
+    memory[AktuelTd.querySelector("a").innerText] = [AktuelTd.querySelector("a").innerText, filterRelativURL(AktuelTd.querySelector("a").href), art];
   }
   AktuelTd.style.padding = "0px";
   AktuelTd.innerText = "";
@@ -549,29 +253,29 @@ function eingabe(AktuelTd, klasse, art) {
 function einAusbutton(AktuelTd, klasse, position) {
   console.log("!!!---einAusbutton---!!!");
   // Abbruchbutton
-  abbruchButton = document.createElement("button");
+  let abbruchButton = document.createElement("button");
   abbruchButton.setAttribute(
     "style",
     "background-color: red;; position: absolute; left: -50px; border-radius: 10%;"
   );
   abbruchButton.setAttribute(
     "onclick",
-    "optionAbbrechen('" + klasse + "', " + position + ")"
+    "optionAbbrechen(this)"
   );
   abbruchButton.classList.add("abbrechen-" + klasse);
-  img = document.createElement("img");
+  let img = document.createElement("img");
   img.setAttribute("src", "../../icons/svg/cancel_black_24dp.svg");
   abbruchButton.appendChild(img);
   AktuelTd.appendChild(abbruchButton);
   // Fertigbutton
-  fertigButton = document.createElement("button");
+  let fertigButton = document.createElement("button");
   fertigButton.setAttribute(
     "style",
     "background-color: green; position: absolute; right: -50px; border-radius: 10%;"
   );
   fertigButton.setAttribute(
     "onclick",
-    "optionEnde('" + klasse + "', " + position + ")"
+    "optionEnde(this)"
   );
   fertigButton.classList.add("fertig-" + klasse);
   img = document.createElement("img");
@@ -583,7 +287,7 @@ function einAusbutton(AktuelTd, klasse, position) {
 function unterwahlButton(AktuelTd, klasse, position) {
   console.log("!!!---unterwahlButton---!!!");
   // unterwahlButton
-  UnterwahlButton = document.createElement("button");
+  let UnterwahlButton = document.createElement("button");
   UnterwahlButton.setAttribute(
     "style",
     "background-color: blue; position: absolute; top: -40px; right: -50px;"
@@ -591,9 +295,9 @@ function unterwahlButton(AktuelTd, klasse, position) {
   UnterwahlButton.classList.add("unterwahl-" + klasse);
   UnterwahlButton.setAttribute(
     "onclick",
-    "zurUnterwahl('unterwahl-" + klasse + "', " + position + ")"
+    "zurUnterwahl(this)"
   );
-  img = document.createElement("img");
+  let img = document.createElement("img");
   img.setAttribute("src", "../../icons/svg/check_black_24dp.svg");
   UnterwahlButton.appendChild(img);
   AktuelTd.appendChild(UnterwahlButton);
@@ -601,7 +305,7 @@ function unterwahlButton(AktuelTd, klasse, position) {
 function allPfeile(AktuelTd, klasse, position) {
   console.log("!!!---allPfeile---!!!");
   // Left
-  pfeilLeft = document.createElement("button");
+  let pfeilLeft = document.createElement("button");
   pfeilLeft.setAttribute(
     "style",
     "background-color: #404649; position: absolute; left: -100px;"
@@ -609,9 +313,9 @@ function allPfeile(AktuelTd, klasse, position) {
   pfeilLeft.classList.add("pfeilLeft-" + klasse);
   pfeilLeft.setAttribute(
     "onclick",
-    "goLeft('" + klasse + "', " + position + ")"
+    "goLeft(this)"
   );
-  img = document.createElement("img");
+  let img = document.createElement("img");
   img.setAttribute("src", "../../icons/svg/west_black_24dp.svg");
   pfeilLeft.appendChild(img);
   AktuelTd.appendChild(pfeilLeft);
@@ -619,7 +323,7 @@ function allPfeile(AktuelTd, klasse, position) {
     pfeilLeft.disabled = true;
   }
   // Right
-  pfeilRight = document.createElement("button");
+  let pfeilRight = document.createElement("button");
   pfeilRight.setAttribute(
     "style",
     "background-color: #404649; position: absolute; right: -100px;"
@@ -627,31 +331,31 @@ function allPfeile(AktuelTd, klasse, position) {
   pfeilRight.classList.add("pfeilRight-" + klasse);
   pfeilRight.setAttribute(
     "onclick",
-    "goRight('" + klasse + "', " + position + ")"
+    "goRight(this)"
   );
   img = document.createElement("img");
   img.setAttribute("src", "../../icons/svg/east_black_24dp.svg");
   pfeilRight.appendChild(img);
   AktuelTd.appendChild(pfeilRight);
   // Top
-  pfeilTop = document.createElement("button");
+  let pfeilTop = document.createElement("button");
   pfeilTop.setAttribute(
     "style",
     "background-color: #404649; position: absolute; left: 40%; top: -50px;"
   );
   pfeilTop.classList.add("pfeilTop-" + klasse);
-  pfeilTop.setAttribute("onclick", "goTop('" + klasse + "', " + position + ")");
+  pfeilTop.setAttribute("onclick", "goTop(this)");
   img = document.createElement("img");
   img.setAttribute("src", "../../icons/svg/north_black_24dp.svg");
   pfeilTop.appendChild(img);
   if (
-    AktuelTd.parentElement.previousElementSibling.querySelector("td") === null
+    AktuelTd.parentElement.previousElementSibling === null
   ) {
     pfeilTop.disabled = true;
   }
   AktuelTd.appendChild(pfeilTop);
   // Bottom
-  pfeilBottom = document.createElement("button");
+  let pfeilBottom = document.createElement("button");
   pfeilBottom.setAttribute(
     "style",
     "background-color: #404649; position: absolute; left: 40%; bottom: -50px;"
@@ -659,7 +363,7 @@ function allPfeile(AktuelTd, klasse, position) {
   pfeilBottom.classList.add("pfeilBottom-" + klasse);
   pfeilBottom.setAttribute(
     "onclick",
-    "goBottom('" + klasse + "', " + position + ")"
+    "goBottom(this)"
   );
   img = document.createElement("img");
   img.setAttribute("src", "../../icons/svg/south_black_24dp.svg");
@@ -673,17 +377,17 @@ function allPfeile(AktuelTd, klasse, position) {
 function ausUnterwahl(AktuelTd, klasse, position) {
   console.log("!!!---ausUnterwahl---!!!");
   // Left
-  pfeilLeft = document.createElement("button");
+  let pfeilLeft = document.createElement("button");
   pfeilLeft.setAttribute(
     "style",
     "background-color: #404649; position: absolute; left: -100px;"
   );
   pfeilLeft.setAttribute(
     "onclick",
-    "unterEnd('pfeilLeft-" + klasse + "', " + position + ")"
+    "unterEnd(this)"
   );
   pfeilLeft.classList.add("pfeilLeft-" + klasse);
-  img = document.createElement("img");
+  let img = document.createElement("img");
   img.setAttribute("src", "../../icons/svg/west_black_24dp.svg");
   pfeilLeft.appendChild(img);
   AktuelTd.appendChild(pfeilLeft);
@@ -691,65 +395,62 @@ function ausUnterwahl(AktuelTd, klasse, position) {
 // Zeilen option//Zeilen
 function zeilenOption(AktuelTd, klasse, position) {
   console.log("!!!---zeilenOption---!!!");
-  position = AktuelTd.parentElement.firstChild.innerText;
-  div = document.createElement("div");
+  let div = document.createElement("div");
   div.classList.add("hinzufügButton");
-  div2 = document.createElement("div");
+  let div2 = document.createElement("div");
   div2.classList.add("löschButton");
-  buttonOben = document.createElement("button");
+  let buttonOben = document.createElement("button");
   buttonOben.setAttribute(
     "onclick",
-    "newZeileOben('" + klasse + "', " + position + ")"
+    "newZeileOben(this)"
   );
   buttonOben.innerText = "Oben";
   div.appendChild(buttonOben);
-  buttonUnten = document.createElement("button");
+  let buttonUnten = document.createElement("button");
   buttonUnten.setAttribute(
     "onclick",
-    "newZeileUnten('" + klasse + "', " + position + ")"
+    "newZeileUnten(this)"
   );
   buttonUnten.innerText = "Unten";
   div.appendChild(buttonUnten);
-  zeileLöschen = document.createElement("button");
+  let zeileLöschen = document.createElement("button");
   zeileLöschen.setAttribute(
     "onclick",
-    "löschZeile('" + klasse + "', " + position + ")"
+    "löschZeile(this)"
   );
   zeileLöschen.innerText = "Löschen";
   div2.appendChild(zeileLöschen);
   AktuelTd.parentElement.appendChild(div2);
   AktuelTd.parentElement.appendChild(div);
+  // AktuelTd.parentElement.setAttribute("id", "actuelRow");
+  // AktuelTd.setAttribute("id", "actuelCelle");
 }
 function zeilenOptionEnd() {
-  console.log("zeilenOptionEnd");
-  div = table.querySelectorAll("div");
+  let div = tbody.querySelectorAll("div");
   for (let i = 0; i < div.length; i++) {
     div[i].parentElement.removeChild(div[i]);
   }
 }
 //!STEP
 //STEP Unterwahl Function
-function unterEnd(klasse, position) {
+
+window.unterEnd = unterEnd
+function unterEnd(buttonElement) {
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
   console.log("!!!---unterEnd----!!!");
   // Werte
-  AktuelTdClass = klasse.replace("pfeilLeft-", "");
-  AktuelTd = table
+  let AktuelTdClass = klasse.replace("pfeilLeft-", "");
+  AktuelTd = tbody
     .getElementsByTagName("tr")
-    [position].querySelector('td[class*="' + AktuelTdClass + '"]');
+  [position].querySelector('td[class*="' + AktuelTdClass + '"]');
   // Attribute ändern
   AktuelTd.classList.remove("unterwahl");
   //Button entfernen
-  document
-    .getElementsByTagName("tr")
-    [position].querySelector('td[class*="' + AktuelTdClass + '"]')
-    .removeChild(
-      document
-        .getElementsByTagName("tr")
-        [position].querySelector('[class="' + klasse + '"]')
-    );
+  buttonElement.remove();
   // Buttons hinzufügen
   // Unterwahlbutton
-  UnterwahlButton = document.createElement("button");
+  let UnterwahlButton = document.createElement("button");
   UnterwahlButton.setAttribute(
     "style",
     "background-color: blue; position: absolute; top: -40px; right: -50px;"
@@ -757,23 +458,26 @@ function unterEnd(klasse, position) {
   UnterwahlButton.classList.add("unterwahl-" + AktuelTdClass);
   UnterwahlButton.setAttribute(
     "onclick",
-    "zurUnterwahl('unterwahl-" + AktuelTdClass + "', " + position + ")"
+    "zurUnterwahl(this)"
   );
-  img = document.createElement("img");
+  let img = document.createElement("img");
   img.setAttribute("src", "../../icons/svg/check_black_24dp.svg");
   UnterwahlButton.appendChild(img);
   AktuelTd.appendChild(UnterwahlButton);
   allPfeile(AktuelTd, AktuelTdClass, position);
 }
-function zurUnterwahl(klasse, position) {
+window.zurUnterwahl = zurUnterwahl
+function zurUnterwahl(buttonElement) {
+  let klasse = "unterwahl-" + buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
   console.log("!!!---zurUnterwahl---!!!");
   // Werte
-  AktuelTdClass = klasse.replace("unterwahl-", "");
-  AktuelTd = table
+  let AktuelTdClass = klasse.replace("unterwahl-", "");
+  AktuelTd = tbody
     .getElementsByTagName("tr")
-    [position].querySelector('td[class*="' + AktuelTdClass + '"]');
+  [position].querySelector('td[class*="' + AktuelTdClass + '"]');
   // Attribute ändern
-  NewClass = "unterwahl";
+  let NewClass = "unterwahl";
   for (let i = 0; i < AktuelTd.classList.length; i++) {
     NewClass += " " + AktuelTd.classList[i];
   }
@@ -813,195 +517,122 @@ function zurUnterwahl(klasse, position) {
 }
 //!STEP
 
-function optionEnde(klasse, position) {
+window.optionEnde = optionEnde
+function optionEnde(buttonElement) {
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
   console.log("!!!---optionEnde---!!!");
-  text = filter4(
-    AktuelTd.querySelector('[class="textarea-' + klasse + '"]').value
-  );
-  // Werte
+  let text = filter4(AktuelTd.querySelector('[class="textarea-' + klasse + '"]').value);
   if (text !== "") {
-    // Function
-    a = document.createElement("a");
-    a.innerText = text;
-    AktuelTd.innerHTML = "";
-    AktuelTd.appendChild(a);
-    if (AktuelTd.classList.contains("unterwahl")) {
-      unterwahlTest = ", 'unterwahl'";
-    } else {
-      unterwahlTest = "";
-    }
-    if (klasse === "neue-zeile") {
-      neueKato = 1;
-    } else {
-      neueKato = 0;
-      tdNummer = tdPosition(position);
-      // ClassBox Fühlen
-      classBox = classBoxen(klasse, position);
-      packet = [
-        [
-          memory[filter(klasse)][0],
-          newhref2(classBox[0], memory[filter(klasse)][1]),
-          position,
-        ],
-      ];
-      allUnterOrdner = [
-        [
-          memory[filter(klasse)][0],
-          newhref2(classBox[0], memory[filter(klasse)][1]),
-        ],
-      ];
-      if (
-        classBox[classBox.length - 1].parentElement.nextElementSibling !== null
-      ) {
-        nextTd =
-          classBox[
-            classBox.length - 1
-          ].parentElement.nextElementSibling.querySelector("td[class]");
-        nextTdPosition = nextTd.parentElement.firstElementChild.innerText;
-        nextTdKlasse = nextTd.classList[nextTd.classList.length - 1];
-        nextTdNummer = tdPosition(nextTdPosition);
-      }
-      let alteNummer = 10;
-      for (let i = 1; i < classBox.length; i++) {
-        allUnterOrdner.push([
-          classBox[i].querySelector("a").innerText,
-          newhref(classBox[i]),
-        ]);
-      }
-      if (
-        classBox[classBox.length - 1].parentElement.nextElementSibling !== null
-      ) {
-        while (tdNummer < nextTdNummer) {
-          allUnterOrdner.push([
-            nextTd.querySelector("a").innerText,
-            newhref(nextTd),
-          ]);
-          if (alteNummer >= nextTdNummer) {
-            alteNummer = nextTdNummer;
-            packet.push([
-              nextTd.querySelector("a").innerText,
-              newhref(nextTd),
-              Number(nextTdPosition),
-            ]);
-          }
-          nextTd =
-            nextTd.parentElement.nextElementSibling.querySelector("td[class]");
-          nextTdPosition = nextTd.parentElement.firstElementChild.innerText;
-          nextTdKlasse = nextTd.classList[nextTd.classList.length - 1];
-          nextTdNummer = tdPosition(nextTdPosition);
-        }
-      }
-      console.log(packet);
-    }
+    // close the Link
+    let a = document.createElement("a");
     if (klasse !== "neue-zeile") {
-      delete memory[klasse];
+      a.href = memory[filter(klasse)][1]
     }
-    zeilenButtonLöschen();
-    AktuelTd.removeAttribute("style");
-    AktuelTr.removeAttribute("style");
-    zeilenOptionEnd();
-    reload();
-    tableAuslesen();
-    if (neueKato) {
-      ordnerHinzufügen(text, filter(newhref(AktuelTd)));
-    } else {
-      // ClassBox neue Fühlen
-      boxKlasse = classBox[0].classList[classBox[0].classList.length - 1];
-      boxPosition = classBox[0].parentElement.firstElementChild.innerText;
-      classBox = classBoxen(boxKlasse, boxPosition);
-      if (zähler !== 0) {
-        for (let i = 0; i < zähler; i++) {
-          AktuelTd = table
-            .getElementsByTagName("tr")
-            [allUnterOrdner[i + 1][2]].querySelector("a").parentElement;
-          allUnterOrdner[i + 1].splice(2);
-          allUnterOrdner[i + 1].push(
-            AktuelTd.querySelector("a").innerText,
-            newhref(AktuelTd)
-          );
-        }
-      }
-      for (let i = 0; i < classBox.length; i++) {
-        allUnterOrdner[i].push(
-          classBox[i].querySelector("a").innerText,
-          newhref(classBox[i])
-        );
-      }
-      let lastTdPosition = packet[0].pop() - 1;
-      let lastA = table.querySelectorAll("a")[lastTdPosition];
-      packet[0].push(lastA.innerText, newhref(lastA.parentElement));
-      if (!lastA.parentElement.classList.contains("unterwahl")) {
-        for (let i = 1; i < packet.length; i++) {
-          let lastTdPosition = packet[i].pop() - 1;
-          let lastA = table.querySelectorAll("a")[lastTdPosition];
-          packet[i].push(lastA.innerText, newhref(lastA.parentElement));
-        }
-      } else {
-        packet.splice(1);
-      }
-      console.log("!!!---packet---!!!");
-      console.log(packet);
-      console.log(allUnterOrdner);
-      ordnerRename(packet, allUnterOrdner);
-    }
-  }
-}
-function optionAbbrechen(klasse, position) {
-  console.log("!!!---optionAbbrechen---!!!");
-  // Werte#
-  if (klasse !== "neue-zeile") {
-    text = memory[filter(klasse)][0];
-    unterwahlTest = memory[filter(klasse)][1];
-    // Function
-    a = document.createElement("a");
     a.innerText = text;
     AktuelTd.innerHTML = "";
     AktuelTd.appendChild(a);
-    if (unterwahlTest === "unterwahl") {
-      if (!AktuelTd.classList.contains("unterwahl")) {
-        AktuelTd.classList.add("unterwahl");
-      }
-    } else {
-      if (AktuelTd.classList.contains("unterwahl")) {
-        AktuelTd.classList.remove("unterwahl");
-      }
-    }
-    delete memory[klasse];
+    // button remove und style entfernen
     zeilenButtonLöschen();
     AktuelTd.removeAttribute("style");
     AktuelTr.removeAttribute("style");
     zeilenOptionEnd();
-    reload();
+
+
+    //-1Veränderung 
+    // 1.File to Folder |reloadFunc= [displaceColumn=true, saveURL=true, unpacking=false]
+    // 2.Folder to File |reloadFunc= [displaceColumn=true, saveURL=true, unpacking=true]
+    //-2Hinzufügen 
+    // 3.File           |reloadFunc= [displaceColumn=true, saveURL=true, unpacking=false]
+    // 4.Folder         |reloadFunc= [displaceColumn=true, saveURL=true, unpacking=false]
+    let displaceColumn = true
+    let saveURL = true
+    let unpacking = false
+    console.log(memory)
+    // console.log(Object.keys(memory))
+    // console.log(Object.keys(memory).length !== 0)
+    // console.log(memory[klasse][2] === undefined)
+    // console.log(AktuelTd.classList.contains("unterwahl"))
+    // console.log(Object.keys(memory).length !== 0 && memory[klasse][2] === undefined && AktuelTd.classList.contains("unterwahl"))
+    if (Object.keys(memory).length !== 0 && memory[klasse][2] === undefined && AktuelTd.classList.contains("unterwahl")) {
+      unpacking = true
+    }
+    let reloadFunc = [displaceColumn, saveURL, unpacking]
+
+    let headTD = AktuelTd
+    let headName = klasse
+    let headTRIndex = childIndex(headTD.parentElement)
+    let headURLColumn = childIndex(headTD)
+    let headElemnet = [headTD, headName, headTRIndex, headURLColumn]
+
+    let changingPacket = []
+    // allPacket = [movePacket, allFile, changingPacket]
+    let allPacket = reload(reloadFunc, headElemnet, changingPacket)
+    let newNavi = tableAuslesen();
+    let changFunc = 0
+    // 1. Verzeichnistrucktur
+    console.log("newNavi: ", newNavi)
+    // 2.
+    console.log("movePacket: ", allPacket[0])
+    console.log("allFile: ", allPacket[1])
+    // 3.
+    console.log("changingPacket: ", changFunc, allPacket[2])
+    let sendPacket = [newNavi, [allPacket[0], allPacket[1]], [changFunc, allPacket[2]]]
+    // sendNewDiretory([{Verzeichnistrucktur}, ZuBewegendeDateien[allMovefolder, allMovefile]], [löschen/hinzufügen, [Name, url]])
+    sendNewDiretory(sendPacket)
   }
 }
-
+window.optionAbbrechen = optionAbbrechen
+function optionAbbrechen(buttonElement) {
+  console.log("!!!---optionAbbrechen---!!!");
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
+  // Werte
+  delete memory[klasse];
+  tbody.innerHTML = ""
+  let thead = table.querySelector("thead");
+  let children = Array.from(thead.firstElementChild.children);
+  for (let i = children.length - 1; i > 0; i--) {
+    children[i].parentElement.removeChild(children[i]);
+  }
+  fillTable(navlist);
+}
 //Zeilen
-function newZeileOben(klasse, position) {
+window.newZeileOben = newZeileOben
+function newZeileOben(buttonElement) {
+  console.log(buttonElement)
+  console.log(buttonElement.parentElement.parentElement.querySelector('[class*="abbrechen-"]'))
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
   console.log("!!!---newZeileOben: " + klasse);
-  optionAbbrechen(klasse);
+  optionAbbrechen(buttonElement.parentElement.parentElement.querySelector('[class*="abbrechen-"]'))
   newZeileErzeugen(position - 1);
-  AktuelTr = table.getElementsByTagName("tr")[position];
+  AktuelTr = tbody.getElementsByTagName("tr")[position];
   AktuelTr.insertAdjacentElement("beforebegin", tr);
   zeilenButtonLöschen();
   klapBox();
 }
-function newZeileUnten(klasse, position) {
+window.newZeileUnten = newZeileUnten
+function newZeileUnten(buttonElement) {
+  console.log(buttonElement)
+  console.log(buttonElement.parentElement.parentElement.querySelector('[class*="abbrechen-"]'))
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
   console.log("!!!---newZeileUnten: " + klasse);
-  optionAbbrechen(klasse);
+  optionAbbrechen(buttonElement.parentElement.parentElement.querySelector('[class*="abbrechen-"]'))
   newZeileErzeugen(position + 1);
-  AktuelTr = table.getElementsByTagName("tr")[position];
+  AktuelTr = tbody.getElementsByTagName("tr")[position];
   AktuelTr.insertAdjacentElement("afterend", tr);
   zeilenButtonLöschen();
   klapBox();
 }
 function newZeileErzeugen(position) {
   console.log("!!!---newZeileErzeugen---!!!");
-  tr = document.createElement("tr");
-  td = document.createElement("td");
+  window.tr = document.createElement("tr");
+  let td = document.createElement("td");
   tr.appendChild(td);
   for (let i = 1; i < 6; i++) {
-    td = document.createElement("td");
-    hinzufügPosition = document.createElement("button");
+    let td = document.createElement("td");
+    let hinzufügPosition = document.createElement("button");
     hinzufügPosition.setAttribute(
       "onclick",
       "newSpalte('" + i + "', " + position + ")"
@@ -1011,9 +642,10 @@ function newZeileErzeugen(position) {
     tr.appendChild(td);
   }
 }
+window.newSpalte = newSpalte
 function newSpalte(zeile, position) {
   console.log("!!!---newSpalte: " + (position - 1));
-  let alleZufügButtons = table.querySelectorAll("[onclick*='newSpalte']");
+  let alleZufügButtons = tbody.querySelectorAll("[onclick*='newSpalte']");
   AktuelTd = alleZufügButtons[zeile - 1].parentElement;
   for (let i = 0; i < alleZufügButtons.length; i++) {
     alleZufügButtons[i].parentElement.removeChild(alleZufügButtons[i]);
@@ -1026,213 +658,401 @@ function newSpalte(zeile, position) {
   allPfeile(AktuelTd, "neue-zeile", position);
   zeilenOption(AktuelTd, "neue-zeile", position);
 }
-function löschZeile(klasse, position) {
-  console.log("löschZeile " + klasse);
-  AktuelTr = table.getElementsByTagName("tr")[position];
-  AktuelTd = table
-    .getElementsByTagName("tr")
-    [position].querySelector('td[class*="' + klasse + '"]');
-  ordnerLöschen(
-    AktuelTr.querySelector('[class="textarea-' + klasse + '"]').value,
-    filter(newhref(AktuelTd))
-  );
-  AktuelTr.parentElement.removeChild(AktuelTr);
-  klapBox();
-  reload();
-  tableAuslesen();
+
+let changingPacket = []
+window.löschZeile = löschZeile
+function löschZeile(buttonElement) {
+  let selectArray = [[0, "Lösch", () => deleteOneFile(buttonElement)], [0, "Lösch alles", () => deleteAllFile(buttonElement)]]
+  selectionBar(selectArray)
+  function deleteOneFile(buttonElement) {
+    console.log(buttonElement)
+    let AktuelTd = buttonElement.parentElement.parentElement.querySelector("[class]")
+    let AktuelTr = AktuelTd.parentElement
+    let klasse = AktuelTd.classList[AktuelTd.classList.length - 1]
+    let position = Array.from(tbody.children).indexOf(AktuelTr)
+    // close Textarea
+    let text = memory[filter(klasse)][0];
+    let href = memory[filter(klasse)][1];
+    // Function
+    let a = document.createElement("a");
+    a.innerText = text;
+    a.href = href
+    AktuelTd.innerHTML = "";
+    AktuelTd.appendChild(a);
+    // read the URL
+    let classBox = classBoxen(klasse, position)
+    let changingPacket = []
+    let fileName = classBox[0].querySelector("a").innerText
+    let fileURL = classBox[0].querySelector("a").href
+    changingPacket.push([fileName, filterRelativURL(fileURL)])
+    // updating the table
+    klapBox();
+    // Löschen 
+    // teil Löschen   |Eingabe= [displaceColumn=true, saveURL=true, unpacking=true]
+    // alles Löschen  |Eingabe= [displaceColumn=false, saveURL=false, unpacking=false]
+    let displaceColumn = true
+    let saveURL = true
+    let unpacking = true
+    let reloadFunc = [displaceColumn, saveURL, unpacking]
+
+    let headTD = AktuelTd
+    let headName = klasse
+    let headTRIndex = childIndex(headTD.parentElement)
+    let headURLColumn = childIndex(headTD)
+    let headElemnet = [headTD, headName, headTRIndex, headURLColumn]
+
+    // delete the file
+    classBox[0].parentElement.remove()
+
+    // allPacket = [movePacket, allFile, changingPacket]
+    let allPacket = reload(reloadFunc, headElemnet, changingPacket)
+    let newNavi = tableAuslesen();
+    let changFunc = 1
+    // 1. Verzeichnistrucktur
+    console.log("newNavi: ", newNavi)
+    // 2.
+    console.log("movePacket: ", allPacket[0])
+    console.log("allFile: ", allPacket[1])
+    // 3.
+    console.log("changingPacket: ", changFunc, allPacket[2])
+    let sendPacket = [newNavi, [allPacket[0], allPacket[1]], [changFunc, allPacket[2]]]
+    // sendNewDiretory([{Verzeichnistrucktur}, ZuBewegendeDateien[allMovefolder, allMovefile]], [löschen/hinzufügen, [Name, url]])
+    sendNewDiretory(sendPacket)
+  }
+
+  function deleteAllFile(buttonElement) {
+    console.log(buttonElement)
+    let AktuelTd = buttonElement.parentElement.parentElement.querySelector("[class]")
+    let AktuelTr = AktuelTd.parentElement
+    let klasse = AktuelTd.classList[AktuelTd.classList.length - 1]
+    let position = Array.from(tbody.children).indexOf(AktuelTr)
+    // close Textarea
+    let text = memory[filter(klasse)][0];
+    let href = memory[filter(klasse)][1];
+    // Function
+    let a = document.createElement("a");
+    a.innerText = text;
+    a.href = href
+    AktuelTd.innerHTML = "";
+    AktuelTd.appendChild(a);
+    // read the URL
+    let classBox = classBoxen(klasse, position)
+    let changingPacket = []
+    let fileName = classBox[0].querySelector("a").innerText
+    let fileURL = classBox[0].querySelector("a").href
+    changingPacket.push([fileName, filterRelativURL(fileURL)])
+    // updating the table
+    klapBox();
+    // Löschen 
+    // teil Löschen   |Eingabe= [displaceColumn=true, saveURL=true, unpacking=true]
+    // alles Löschen  |Eingabe= [displaceColumn=false, saveURL=false, unpacking=false]
+    let displaceColumn = false
+    let saveURL = false
+    let unpacking = false
+    let reloadFunc = [displaceColumn, saveURL, unpacking]
+
+    let headTD = AktuelTd
+    let headName = klasse
+    let headTRIndex = childIndex(headTD.parentElement)
+    let headURLColumn = childIndex(headTD)
+    let headElemnet = [headTD, headName, headTRIndex, headURLColumn]
+
+    // delete the file
+    for (let i = 0; i < classBox.length; i++) {
+      classBox[i].parentElement.remove()
+    }
+    // allPacket = [movePacket, allFile, changingPacket]
+    let allPacket = reload(reloadFunc, headElemnet, changingPacket)
+    let newNavi = tableAuslesen();
+    let changFunc = 2
+    // 1. Verzeichnistrucktur
+    console.log("newNavi: ", newNavi)
+    // 2.
+    console.log("movePacket: ", allPacket[0])
+    console.log("allFile: ", allPacket[1])
+    // 3.
+    console.log("changingPacket: ", changFunc, allPacket[2])
+    let sendPacket = [newNavi, [allPacket[0], allPacket[1]], [changFunc, allPacket[2]]]
+    // sendNewDiretory([{Verzeichnistrucktur}, ZuBewegendeDateien[allMovefolder, allMovefile]], [löschen/hinzufügen, [Name, url]])
+    sendNewDiretory(sendPacket)
+  }
 }
 
 //Funktion
 function zeilenButtonLöschen() {
   console.log("!!!---zeilenButtonLöschen---!!!");
-  divs = table.querySelectorAll("div");
+  let divs = tbody.querySelectorAll("div");
   for (let i = 0; i < divs.length; i++) {
     divs[i].parentElement.removeChild(divs[i]);
   }
 }
-function reload() {
+function reload(reloadFunc = [false, false, false], headElemnet = [, , ,], changingPacket) {
   console.log("!!!---reload---!!!");
-  //werte
-  let alleA = table.querySelectorAll("a");
-  let vorNummer = 0;
-  allclass = [];
-  let alteNummer = 10;
-  let runde = 1;
-  let unterRunde = 0;
-  zähler = 0;
-  for (let i = 0; i < alleA.length; i++) {
-    // 1. Überschrift
-    let text = alleA[i].innerText;
-    // 2. position
-    nummer = tdPosition(i + 1);
-    if (alleA[i].parentElement.parentElement.nextElementSibling !== null) {
-      // Tabelle Zurecht Rücken
-      //Unterwahl
-      if (
-        alleA[i].parentElement.classList.contains("unterwahl") &&
-        !unterRunde
-      ) {
-        if (
-          nummer <
-          tdPosition(
-            Number(
-              alleA[i].parentElement.parentElement.nextElementSibling
-                .firstElementChild.innerText
-            )
-          )
-        ) {
-          runde = 4;
-          unterClass =
-            alleA[i].parentElement.classList[
-              alleA[i].parentElement.classList.length - 1
-            ];
-          unterRunde = 1;
-        }
-      }
-      if (
-        unterRunde &&
-        alleA[i].parentElement.parentElement.nextElementSibling
-          .querySelector("[class]")
-          .classList.contains(unterClass)
-      ) {
-        for (let j = 0; j < 1; j++) {
-          schiebObjekt =
-            alleA[
-              i
-            ].parentElement.parentElement.nextElementSibling.querySelector(
-              "[class]"
-            );
-          zähler += 1;
-          allUnterOrdner[zähler].push(
-            schiebObjekt.parentElement.firstChild.innerText
-          );
-
-          schiebObjekt.insertAdjacentElement(
-            "afterend",
-            schiebObjekt.previousElementSibling
-          );
-        }
-      } else {
-        unterRunde = 0;
-      }
-      //Ordner
-      // runde 3
-      if (runde === 2 && endNummer + 1 >= nummer) {
-        runde = 3;
-      }
-      // runde 2
-      if (runde === 2) {
-        if (highNummer > nummer) {
-          diferenz = 0;
-          while (endNummer + 1 !== tdPosition(i + 1)) {
-            alleA[i].parentElement.insertAdjacentElement(
-              "afterend",
-              alleA[i].parentElement.previousElementSibling
-            );
-            diferenz += 1;
-          }
-          highNummer = nummer;
-        } else {
-          for (let j = 0; j < diferenz; j++) {
-            alleA[i].parentElement.insertAdjacentElement(
-              "afterend",
-              alleA[i].parentElement.previousElementSibling
-            );
-          }
-        }
-      }
-      // runde 1
-      if (runde && alteNummer + 1 < nummer) {
-        diferenz = 0;
-        while (alteNummer + 1 !== tdPosition(i + 1)) {
-          alleA[i].parentElement.insertAdjacentElement(
-            "afterend",
-            alleA[i].parentElement.previousElementSibling
-          );
-          diferenz += 1;
-        }
-        endNummer = alteNummer;
-        highNummer = nummer;
-        runde = 2;
-      }
-      alteNummer = nummer;
-      nummer = tdPosition(i + 1);
-    }
-    //3. class
-    if (vorNummer < nummer) {
-      // kein Wechsel
-      vorNummer = nummer;
-      allclass.push(" " + filter2(text));
+  // Funktion
+  function saveInArray(array, elementTR, index) {
+    if (index === undefined) {
+      array.push([elementTR.querySelector("a").innerText, filterRelativURL(elementTR.querySelector("a").href)]);
     } else {
-      // oberKategorie Wechsel
-      allclass.splice(nummer - 1);
-      allclass.push(" " + filter2(text));
-      vorNummer = nummer;
+      array[index].push(elementTR.querySelector("a").innerText, filterRelativURL(elementTR.querySelector("a").href));
     }
-    ausgabeAllclass = "";
-    for (let i = 0; i < allclass.length; i++) {
-      ausgabeAllclass += "" + allclass[i];
-    }
-    // 4. Unterclasse
-    if (alleA[i].parentElement.classList.contains("unterwahl")) {
-      unterwahl = ", 'unterwahl'";
-      unterKlass = "unterwahl";
-    } else {
-      unterwahl = "";
-      unterKlass = "";
-    }
-    // Attribute Hinzufügen
-    // Onclick
-    if (
-      alleA[i].parentElement.parentElement.firstElementChild.innerHTML === "178"
-    ) {
-      console.log("Start");
-    }
-    alleA[i].parentElement.removeAttribute("class");
-    alleA[i].parentElement.setAttribute(
-      "ondblclick",
-      "option('" + filter2(text) + "', " + (i + 1) + unterwahl + ")"
-    );
-    // Klasse
-    alleA[i].parentElement.setAttribute("class", unterKlass + ausgabeAllclass);
-    // Link Korektur
-    newHref = newhref(alleA[i].parentElement);
-    alleA[i].parentElement.querySelector("a").href = newHref;
   }
-  klapBox();
+  // Head Werte
+  let headTD = headElemnet[0]
+  let headName = headElemnet[1]
+  let headTRIndex = headElemnet[2]
+  let headURLColumn = headElemnet[3]
+  let headTDUnder = headTD.classList.contains("unterwahl")
+  // reload Function
+  let displaceColumn = reloadFunc[0]
+  let saveURL = reloadFunc[1]
+  let unpacking = reloadFunc[2]
+  // werte
+  let allA = tbody.querySelectorAll("a");
+  let columnLastFolder
+  let previLineColumn = 0;
+  let lastRowOfColumn = []
+  let allclass = []
+  let urlSaveAct = false
+  // Packen werte
+  let movePacket = []
+  let allFile = []
+  let previAllFile
+  let previPacket
+  let previChangingPacket
+  let previPacketIndex
+  console.log(changingPacket)
+
+  for (let i = 0; i < allA.length; i++) {
+    console.log(allA[i])
+    // werte
+    // actuel File
+    let actText = allA[i].innerText;
+    let actTD = allA[i].parentElement
+    let actTR = actTD.parentElement
+    let aktTdUnder = actTD.classList.contains("unterwahl")
+    let actTDColumn = childIndex(actTD)
+    if (!aktTdUnder) {
+      columnLastFolder = childIndex(actTD)
+      lastRowOfColumn[columnLastFolder - 1] = actTD
+    }
+
+
+    // 1.einrücken
+    if (allA[i + 1] !== undefined && displaceColumn) {
+      // next File
+      let nextTD = allA[i + 1].parentElement
+      let nextTR = nextTD.parentElement
+      let nextTDColumn = childIndex(nextTD)
+      let nextTDUnder = nextTD.classList.contains("unterwahl")
+      // -1Regel all Column to left
+      if (columnLastFolder + 1 < nextTDColumn) {
+        while (columnLastFolder + 1 < nextTDColumn) {
+          nextTD.insertAdjacentElement("afterend", nextTD.previousElementSibling);
+          nextTDColumn = childIndex(nextTD);
+        }
+        if (headTD === nextTD) {
+          headURLColumn = childIndex(nextTD);
+        }
+      }
+      // -2Regel File Column one to rigth
+      if (nextTDUnder && nextTDColumn === 1) {
+        nextTD.insertAdjacentElement("beforebegin", nextTD.nextElementSibling);
+        nextTDColumn = childIndex(nextTD);
+        if (headTD === nextTD) {
+          headURLColumn = childIndex(nextTD);
+        }
+      }
+      // -Ausnahme verrückung
+      if (unpacking && nextTD.classList[nextTD.classList.length - 2] === headName) {
+        nextTD.insertAdjacentElement("afterend", nextTD.previousElementSibling);
+        nextTDColumn = childIndex(nextTD);
+        if (headTD === nextTD && headTD.parentElement.parentElement === null) {
+          headURLColumn = childIndex(nextTD);
+        }
+      }
+      // -3Regel File Column to top
+      let overTdUnder = nextTR.previousElementSibling.children[nextTDColumn].classList.contains("unterwahl")
+      console.log(nextTDUnder)
+      console.log(lastRowOfColumn)
+      console.log(nextTDColumn)
+      console.log(nextTDColumn - 2)
+      // console.log(childIndex(lastRowOfColumn[nextTDColumn - 2].parentElement) + 1 < i)
+      console.log(!overTdUnder)
+      console.log(nextTDUnder && childIndex(lastRowOfColumn[nextTDColumn - 2].parentElement) + 1 <= i && !overTdUnder)
+      if (nextTDUnder && childIndex(lastRowOfColumn[nextTDColumn - 2].parentElement) + 1 <= i && !overTdUnder) {
+        console.log(nextTR)
+        let index = childIndex(nextTR);
+        while (childIndex(lastRowOfColumn[nextTDColumn - 2].parentElement) + 1 < index && !overTdUnder) {
+          nextTR.insertAdjacentElement("afterend", nextTR.previousElementSibling);
+          index = childIndex(nextTR);
+          overTdUnder = nextTR.previousElementSibling.children[nextTDColumn].classList.contains("unterwahl")
+        }
+      }
+    }
+
+
+    // 2.änderung speicher
+    if (saveURL) {
+      // -1packet
+      // eingabe beenden
+      if (previPacket !== undefined) {
+        saveInArray(movePacket, previPacket, movePacket.length - 1)
+        previPacket = undefined
+      }
+
+      // Weiter speichern
+      if (urlSaveAct) {
+        console.log(actTD)
+        console.log(actTR)
+        console.log("mittel1")
+        console.log(!actTD.classList.contains(headName))
+        console.log(headURLColumn < actTDColumn)
+        console.log(previPacketIndex >= actTDColumn)
+        console.log(previPacketIndex === undefined)
+        console.log(!actTD.classList.contains(headName) && headURLColumn < actTDColumn && (previPacketIndex >= actTDColumn || previPacketIndex === undefined))
+        console.log("mittel2")
+        console.log(unpacking)
+        console.log(actTD.classList[actTD.classList.length - 2] === headName)
+        console.log(unpacking && actTD.classList[actTD.classList.length - 2] === headName)
+        console.log("groß")
+        console.log(!actTD.classList.contains(headName) && headURLColumn < actTDColumn && (previPacketIndex >= actTDColumn || previPacketIndex === undefined) || unpacking && actTD.classList[actTD.classList.length - 2] === headName)
+        if (!actTD.classList.contains(headName) && headURLColumn < actTDColumn && (previPacketIndex >= actTDColumn || previPacketIndex === undefined) || unpacking && actTD.classList[actTD.classList.length - 2] === headName) {
+          saveInArray(movePacket, actTR)
+          previPacket = actTR
+          previPacketIndex = actTDColumn
+        }
+      }
+
+
+      // -2allFile
+      // eingabe beenden
+      if (previAllFile !== undefined) {
+        saveInArray(allFile, previAllFile, allFile.length - 1)
+        previAllFile = undefined
+      }
+
+
+
+      // Weiter speichern
+      if (urlSaveAct) {
+        if (headURLColumn < actTDColumn || actTD.classList.contains(headName)) {
+          saveInArray(allFile, actTR)
+          previAllFile = actTR
+        } else {
+          urlSaveAct = false
+        }
+      }
+
+      // -3changingPacket
+      // eingabe beenden
+      if (previChangingPacket !== undefined) {
+        saveInArray(changingPacket, previChangingPacket, changingPacket.length - 1)
+        previChangingPacket = undefined
+      }
+
+
+      // Start
+      if (headTD === actTD || headTD.parentElement.parentElement === null && headTRIndex === i) {
+        if (allA[i].href !== "" || !headTDUnder) {
+          urlSaveAct = true
+          saveInArray(movePacket, actTR)
+          saveInArray(allFile, actTR)
+          previPacket = actTR
+          previAllFile = actTR
+        }
+        if (allA[i].href === "") {
+          saveInArray(changingPacket, actTR)
+          previChangingPacket = actTR
+        }
+      }
+    }
+
+    // 3.URL Erzeugung
+    // -1Klassen Speicher
+
+
+    if (!aktTdUnder) {
+      if (previLineColumn < actTDColumn) {
+        // kein Wechsel
+        allclass.push(filter2(actText));
+      } else {
+        // oberKategorie Wechsel
+        allclass.splice(actTDColumn - 1);
+        allclass.push(filter2(actText));
+      }
+    }
+    previLineColumn = actTDColumn;
+
+
+    // -2Klassen verteilung
+    // -unterwahl
+    if (allA[i].parentElement.classList.contains("unterwahl")) {
+      allA[i].parentElement.removeAttribute("class");
+      allA[i].parentElement.classList.add("unterwahl");
+    } else {
+      allA[i].parentElement.removeAttribute("class");
+    }
+    // -klasse verteilen
+    for (let j = 0; j < actTDColumn - 1; j++) {
+      allA[i].parentElement.classList.add(allclass[j]);
+    }
+    allA[i].parentElement.classList.add(filter2(actText));
+
+
+    // -3URL Erzeugung
+    let newHref = newhref(actTD);
+    allA[i].href = newHref;
+    //4. Onclick
+    actTD.setAttribute(
+      "ondblclick",
+      "option(this)"
+    );
+
+
+  }
+  console.log(movePacket)
+  console.log(allFile)
+  console.log(changingPacket)
+  let allPacket = [movePacket, allFile, changingPacket]
+  return allPacket
 }
 
-function goLeft(klasse, position) {
-  classBox = classBoxen(klasse, position);
+window.goLeft = goLeft
+function goLeft(buttonElement) {
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
+  console.log("!!!---goLeft---!!!")
+  let classBox = classBoxen(klasse, position);
   for (let i = 0; i < classBox.length; i++) {
     classBox[i].insertAdjacentElement(
       "afterend",
       classBox[i].previousElementSibling
     );
+    console.log(classBox[0])
+    console.log(classBox[0].previousElementSibling)
+    console.log(classBox[0].previousElementSibling.hasChildNodes())
     if (classBox[0].previousElementSibling.hasChildNodes()) {
-      classBox[0].querySelector(
-        '[class="pfeilLeft-' + klasse + '"]'
-      ).disabled = true;
+      console.log(classBox[0].querySelector('[class="pfeilLeft-' + klasse + '"]'))
+      classBox[0].querySelector('[class="pfeilLeft-' + klasse + '"]').disabled = true;
     }
-    if (classBox[i].nextElementSibling !== null) {
-      classBox[0].querySelector(
-        '[class="pfeilRight-' + klasse + '"]'
-      ).disabled = false;
-    }
+    cutTbody()
   }
 }
-function goRight(klasse, position) {
-  classBox = classBoxen(klasse, position);
+window.goRight = goRight
+function goRight(buttonElement) {
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
+  console.log("!!!---goRight---!!!")
+  let classBox = classBoxen(klasse, position);
   for (let i = 0; i < classBox.length; i++) {
-    classBox[i].insertAdjacentElement(
-      "beforebegin",
-      classBox[i].nextElementSibling
-    );
-    if (classBox[i].nextElementSibling === null) {
-      classBox[0].querySelector(
-        '[class="pfeilRight-' + klasse + '"]'
-      ).disabled = true;
+    if (classBox[i].nextElementSibling === null || classBox[i].nextElementSibling.tagName === "DIV") {
+      fillTbody()
+      if (classBox[i].nextElementSibling.tagName === "DIV") {
+        classBox[i].nextElementSibling.nextElementSibling.insertAdjacentElement("beforebegin", classBox[i].nextElementSibling.nextElementSibling.nextElementSibling);
+        classBox[i].nextElementSibling.insertAdjacentElement("beforebegin", classBox[i].nextElementSibling.nextElementSibling);
+      }
     }
+    classBox[i].insertAdjacentElement("beforebegin", classBox[i].nextElementSibling);
     if (!classBox[0].previousElementSibling.hasChildNodes()) {
       classBox[0].querySelector(
         '[class="pfeilLeft-' + klasse + '"]'
@@ -1240,11 +1060,15 @@ function goRight(klasse, position) {
     }
   }
 }
-function goTop(klasse, position) {
+window.goTop = goTop
+function goTop(buttonElement) {
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
   console.log("!!!---goTop---!!!");
-  tdNummer = tdPosition(position);
+  let tdNummer = tdPosition(position);
   // ClassBox Fühlen
-  classBox = classBoxen(klasse, position);
+  let classBox = classBoxen(klasse, position);
+  let obenIstUnterwahl
   if (
     classBox[0].parentElement.previousElementSibling.querySelector("a")
       .parentElement.classList[0] !== "unterwahl"
@@ -1253,7 +1077,7 @@ function goTop(klasse, position) {
   } else {
     obenIstUnterwahl = 0;
   }
-  obenBoxClass =
+  let obenBoxClass =
     classBox[0].parentElement.previousElementSibling.querySelector("a")
       .parentElement.classList[tdNummer - obenIstUnterwahl];
   if (obenBoxClass === undefined) {
@@ -1265,22 +1089,17 @@ function goTop(klasse, position) {
       classBox[0].parentElement.previousElementSibling.querySelector("a")
         .parentElement.classList[tdNummer - obenIstUnterwahl];
   }
-  unterAllclassBox = table.getElementsByClassName(obenBoxClass);
   while (
-    classBox[0].parentElement.previousElementSibling
-      .querySelector("a")
-      .parentElement.classList.contains(obenBoxClass)
+    classBox[0].parentElement.previousElementSibling !== null && classBox[0].parentElement.previousElementSibling.querySelector("a").parentElement.classList.contains(obenBoxClass)
   ) {
     for (let i = 0; i < classBox.length; i++) {
-      classBox[i].parentElement.insertAdjacentElement(
-        "afterend",
-        classBox[i].parentElement.previousElementSibling
-      );
+      classBox[i].parentElement.insertAdjacentElement("afterend", classBox[i].parentElement.previousElementSibling);
     }
+    console.log(classBox[0].parentElement.previousElementSibling)
+    console.log(classBox[0].parentElement.previousElementSibling !== null)
   }
   if (
-    classBox[0].parentElement.previousElementSibling.querySelectorAll("tr")
-      .length !== 0
+    classBox[0].parentElement.previousElementSibling === null
   ) {
     classBox[0].parentElement.querySelector(
       '[class="pfeilTop-' + klasse + '"]'
@@ -1292,87 +1111,79 @@ function goTop(klasse, position) {
     ).disabled = false;
   }
   klapBox();
-  buttonLöschen = classBox[0].getElementsByTagName("button");
-  for (let i = 0; i < buttonLöschen.length; i++) {
-    buttonLöschen[i].parentElement.removeChild(buttonLöschen[i]);
-  }
-  newPosition = classBox[0].parentElement.firstElementChild.innerText;
-  einAusbutton(classBox[0], klasse, newPosition);
-  //Kategorie
-  // unterwahlButton
-  unterwahlButton(classBox[0], klasse, newPosition);
-  //Richtungspfeile
-  allPfeile(classBox[0], klasse, newPosition);
-  //Fokus
-  classBox[0].parentElement.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.setAttribute(
-    "id",
-    "Offen"
-  );
-  window.location = "./verzeichnis.html#Offen";
-  document.getElementById("Offen").removeAttribute("id");
-}
-function goBottom(klasse, position) {
-  console.log("!!!---goBottom---!!!");
-  // ClassBox Fühlen
-  classBox = classBoxen(klasse, position);
-  unterBoxClass = filter2(
-    classBox[
-      classBox.length - 1
-    ].parentElement.nextElementSibling.querySelector("a").innerText
-  );
-  // unterAllclassBox = table.querySelectorAll("." + unterBoxClass)
-  while (
-    classBox[classBox.length - 1].parentElement.nextElementSibling
-      .querySelector("a")
-      .parentElement.classList.contains(unterBoxClass)
-  ) {
-    for (let i = classBox.length - 1; i > -1; i -= 1) {
-      classBox[i].parentElement.insertAdjacentElement(
-        "beforebegin",
-        classBox[i].parentElement.nextElementSibling
-      );
-    }
-    if (
-      classBox[classBox.length - 1].parentElement.nextElementSibling === null
-    ) {
-      break;
-    }
-  }
-  if (classBox[classBox.length - 1].parentElement.nextElementSibling === null) {
-    pfeilBottom.disabled = true;
-  }
-  if (
-    classBox[0].parentElement.previousElementSibling.querySelectorAll("tr")
-      .length === 0
-  ) {
-    classBox[0].parentElement.querySelector(
-      '[class="pfeilTop-' + klasse + '"]'
-    ).disabled = false;
-  }
-  klapBox();
-  buttonLöschen = classBox[0].getElementsByTagName("button");
-  for (let i = 0; i < buttonLöschen.length; i++) {
-    buttonLöschen[i].parentElement.removeChild(buttonLöschen[i]);
-  }
-  newPosition = classBox[0].parentElement.firstElementChild.innerText;
-  einAusbutton(classBox[0], klasse, newPosition);
-  //Kategorie
-  // unterwahlButton
-  unterwahlButton(classBox[0], klasse, newPosition);
-  //Richtungspfeile
-  allPfeile(classBox[0], klasse, newPosition);
-  classBox[0].parentElement.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling.setAttribute(
-    "id",
-    "Offen"
-  );
-  window.location = "./verzeichnis.html#Offen";
+  // Website Fokus
+  document.getElementsByTagName("textarea")[0].setAttribute("id", "Offen");
+  scrollToCenter("Offen")
   document.getElementById("Offen").removeAttribute("id");
 }
 
+window.goBottom = goBottom
+function goBottom(buttonElement) {
+  let klasse = buttonElement.parentElement.classList[buttonElement.parentElement.classList.length - 1]
+  let position = Array.from(tbody.children).indexOf(buttonElement.parentElement.parentElement)
+  console.log("!!!---goBottom---!!!");
+  // Variablen
+  // Aktuelle
+  let classBox = classBoxen(klasse, position)
+  let tdColumn = tdPosition(position);
+
+  // Nexte
+  let nextClass = classBox[classBox.length - 1].parentElement.nextElementSibling.querySelector('[class]').classList[classBox[classBox.length - 1].parentElement.nextElementSibling.classList.length - 1]
+  let nextTRPosition = Array.from(tbody.children).indexOf(classBox[classBox.length - 1].parentElement.nextElementSibling)
+  let nextTDColumn = tdPosition(nextTRPosition);
+  let nextClassBox = classBoxen(nextClass, nextTRPosition)
+  let obenIstUnterwahl
+  // Funktionen
+  if (classBox[classBox.length - 1].parentElement.nextElementSibling !== null) {
+    if (tdColumn > nextTDColumn) {
+      for (let i = classBox.length - 1; i > -1; i -= 1) {
+        classBox[i].parentElement.insertAdjacentElement("beforebegin", classBox[i].parentElement.nextElementSibling);
+      }
+    } else {
+      // unterwahl
+      if (classBox[classBox.length - 1].parentElement.nextElementSibling.querySelector('[class]').classList.contains("unterwahl")) {
+        obenIstUnterwahl = 0;
+      } else {
+        obenIstUnterwahl = 1;
+      }
+      let nameOfClassBox = classBox[classBox.length - 1].parentElement.nextElementSibling.querySelector('[class]').classList[tdColumn - obenIstUnterwahl]
+      while (classBox[classBox.length - 1].parentElement.nextElementSibling !== null && classBox[classBox.length - 1].parentElement.nextElementSibling.querySelector('[class]').classList.contains(nameOfClassBox)) {
+        for (let i = classBox.length - 1; i > -1; i -= 1) {
+          classBox[i].parentElement.insertAdjacentElement("beforebegin", classBox[i].parentElement.nextElementSibling);
+        }
+      }
+    }
+    // Button Disabled
+    if (classBox[classBox.length - 1].parentElement.nextElementSibling === null) {
+      let pfeilBottom = document.querySelector(".pfeilBottom-" + klasse)
+      pfeilBottom.disabled = true;
+    }
+    if (
+      classBox[0].parentElement.previousElementSibling.querySelectorAll("tr")
+        .length === 0
+    ) {
+      classBox[0].parentElement.querySelector('[class="pfeilTop-' + klasse + '"]').disabled = false;
+    }
+    klapBox();
+    // Website Fokus
+    document.getElementsByTagName("textarea")[0].setAttribute("id", "Offen");
+    scrollToCenter("Offen")
+    document.getElementById("Offen").removeAttribute("id");
+  }
+}
+
+function scrollToCenter(elementId) {
+  const element = document.getElementById(elementId);
+  const elementRect = element.getBoundingClientRect();
+  const windowHeight = window.innerHeight;
+
+  const offset = elementRect.top - (windowHeight / 2) + (elementRect.height / 2);
+  window.scrollBy({ top: offset, behavior: 'smooth' });
+}
 //Zwischen Funktionen
 
 function newhref(AktuelTd) {
-  href2 = "..";
+  let href2 = "..";
   if (AktuelTd.classList[0] === "unterwahl") {
     for (let i = 1; i < AktuelTd.classList.length; i++) {
       let klassen = AktuelTd.classList[i];
@@ -1392,6 +1203,7 @@ function newhref(AktuelTd) {
   return href2;
 }
 
+window.newhref2 = newhref2
 function newhref2(AktuelTd, unterwahl) {
   href2 = "..";
   if (unterwahl === "unterwahl") {
@@ -1433,9 +1245,10 @@ function newhref2(AktuelTd, unterwahl) {
 }
 
 function classBoxen(klasse, position) {
+  console.log("classBoxen")
   let classBox = [];
-  AktuelTr = table.getElementsByTagName("tr")[position];
-  nextTr = AktuelTr;
+  AktuelTr = tbody.getElementsByTagName("tr")[position];
+  let nextTr = AktuelTr;
   while (nextTr.querySelector("[class]").classList.contains(klasse)) {
     classBox.push(nextTr.querySelector("[class]"));
     nextTr = nextTr.nextElementSibling;
@@ -1447,12 +1260,12 @@ function classBoxen(klasse, position) {
 }
 
 function tdPosition(positon) {
-  td = table.getElementsByTagName("tr")[positon].querySelector("td[class]");
-  for (let i = 0; i < td.parentElement.children.length; i++) {
-    if (td.parentElement.children.item(i) === td) {
-      return i;
-    }
-  }
+  let td = tbody.getElementsByTagName("tr")[positon].querySelector("td[class]");
+  let position = Array.from(td.parentElement.children).indexOf(td)
+  return position;
+}
+function filterRelativURL(url) {
+  return url.replace(window.location.origin + "/hauptverzeichnis/", "../");
 }
 function filter(Name) {
   let ausgabe = Name;
@@ -1482,20 +1295,4 @@ function filter4(Name) {
     ausgabe = ausgabe.replace("\n", "");
   }
   return ausgabe;
-}
-
-function start() {
-  const myInterval = setInterval(myTimer, 1000);
-  allHref = table.getElementsByTagName("a");
-  let AZähler = 0;
-  function myTimer() {
-    window.open(allHref[AZähler].href);
-    AZähler += 1;
-    if (AZähler === allHref.length) {
-      clearInterval(myInterval);
-    }
-  }
-  function Stop() {
-    clearInterval(myInterval);
-  }
 }

@@ -1,313 +1,79 @@
+import {
+  seekFocus,
+  NewInput,
+  useKeyButton,
+  writeFieldClose,
+  locationPath,
+  selectionBar,
+} from "./testModule.js";
 //Werte
-main = document.querySelector("main");
-PORT = 8000;
+const main = document.querySelector("main");
+const PORT = 8000;
+var jumpTo = [];
+var FocusElement;
+var Focus2Number;
+// functions to global sccope
+window.selectionBar = selectionBar;
+window.attributeCancel = attributeCancel;
+window.attributeValidate = attributeValidate;
+window.useKeyButton = useKeyButton;
+window.ElementGoLeftUp = ElementGoLeftUp;
+window.ElementGoRightDown = ElementGoRightDown;
+window.writeCancel = writeCancel;
+window.textWriteCancel = textWriteCancel;
+window.writeFinish = writeFinish;
+window.textWriteFinish = textWriteFinish;
+window.writeNewElement = writeNewElement;
+window.pushElement = pushElement;
+window.overwriteDelete = overwriteDelete;
+// Elemente
+window.ElementOptionLI = ElementOptionLI;
+window.ElementOptionTD = ElementOptionTD;
+window.ElementOptionTH = ElementOptionTH;
+window.ElementOptionTable = ElementOptionTable;
+window.ElementOptionUL = ElementOptionUL;
+window.ElementOptionOL = ElementOptionOL;
+// window.ElementOptionMethods = ElementOptionMethods;
+// global variable
+window.main = main;
+window.logOutput = true;
 
 //Code
 loadPage();
 function loadPage() {
-  navigation();
-  cssOverflow();
-  newBoxen();
-  controlBar();
-  boxBarSytem();
-  if (!window.location.href.includes("verzeichnis.html")) {
-    clickHold();
+  if (
+    !window.location.href.includes("verzeichnis.html") &&
+    !window.location.href.includes("senden.html")
+  ) {
+    OverwriteClick();
   }
 }
 
-//CATEGORY Loaddirectory
-function navigation() {
-  //CATEGORY Constante Daten
-  let pfad = window.location.pathname.slice(
-    window.location.pathname.search("hauptverzeichnis")
-  );
-  // Pfadname
-  //ANCHOR Verzeichnisnamen & Filter
-  let ausgabe = pfad.split("/");
-  //ANCHOR Ausnahme Filter
-  function htmlReplace(ausdruck) {
-    return ausdruck.replace(".html", "");
-  }
-  for (let i = 0; i < ausgabe.length; i++) {
-    ausgabe[i] = filter(ausgabe[i]);
-  }
-  // Standort
-  standort = "";
-  for (let i = 0; i < pfad.split("/").length - 2; i++) {
-    standort += "../";
-  }
-  standort += "./";
-  //Favicon icon
-  let link = document.createElement("link");
-  link.setAttribute("rel", "shortcut icon");
-  link.setAttribute("href", standort + "../icons/png/favicon.ico");
-  link.setAttribute("type", "image/x-icon");
-  document.querySelector("link").insertAdjacentElement("beforebegin", link);
-  //ANCHOR Hauptverzeichnis
-  loadDirectory();
-  function loadDirectory() {
-    let requestURL = standort + "verzeichnis.json";
-    //Anfrage senden
-    let request = new XMLHttpRequest();
-    request.open("GET", requestURL);
-    request.responseType = "text";
-    request.send();
-    request.onload = function alpha() {
-      navlist = JSON.parse(request.response);
-      navigationBar(navlist);
-    };
-  }
-  //!CATEGORY
-  //CATEGORY Navigation Function
-  function navigationBar(navlist) {
-    //ANCHOR Verändernde Daten
-    leistenZahl = 0;
-    //ANCHOR Hauptfunction
-    if (ausgabe[0] === "hauptverzeichnis") {
-      header = document.createElement("header");
-      for (let i = 0; i < pfad.split("/").length - 1; i++) {
-        switch (i) {
-          case 0:
-            //1 Leiste
-            if (navlist !== undefined) {
-              leiste(navlist, ausgabe[i + 1]);
-            }
-            continue;
-          case 1:
-            //2 Leiste
-            if (navlist[ausgabe[i]][2] !== undefined) {
-              leiste(navlist[ausgabe[i]][2], ausgabe[i + 1]);
-            }
-            continue;
-          case 2:
-            //3 Leiste
-            if (navlist[ausgabe[i - 1]][2][ausgabe[i]][2] !== undefined) {
-              leiste(navlist[ausgabe[i - 1]][2][ausgabe[i]][2], ausgabe[i + 1]);
-            }
-            continue;
-          case 3:
-            //4 Leiste
-            if (
-              navlist[ausgabe[i - 2]][2][ausgabe[i - 1]][2][ausgabe[i]] !==
-              undefined
-            ) {
-              leiste(
-                navlist[ausgabe[i - 2]][2][ausgabe[i - 1]][2][ausgabe[i]][2],
-                ausgabe[i + 1]
-              );
-            }
-            continue;
-        }
-      }
-      function leiste(navliste, ausgaben) {
-        leistenZahl++;
-        let nav = document.createElement("nav");
-        nav.setAttribute("class", "navi" + leistenZahl);
-        let ul = document.createElement("ul");
-        //ANCHOR Link einpacken
-        for (key in navliste) {
-          let li = document.createElement("li");
-          let a = document.createElement("a");
-          a.innerHTML = navliste[key][0];
-          if (ausgaben === navliste[key][0].toLowerCase()) {
-            a.setAttribute("class", "aktuell");
+var clickCount = 0;
+var lastClickTime = 0;
+//Schreiben
+function OverwriteClick() {
+  console.log("!!!---OverwriteClick---!!!");
+  document.body.addEventListener("mousedown", (e) => {
+    var now = new Date().getTime();
+    if (clickCount === 0 || now - lastClickTime < 500) {
+      clickCount++;
+      lastClickTime = now;
+      if (clickCount === 3) {
+        if (
+          document.getElementById("ElementSeletction") === null &&
+          document.getElementById("ElementOption") === null &&
+          document.getElementById("overriteFinishButton") === null
+        ) {
+          if (e.composedPath()[e.composedPath().length - 5].matches("main")) {
+            console.log("!!!---open Option---!!!");
+            openOverwriteOption(e.target);
           }
-          a.setAttribute("href", standort + navliste[key][1]);
-          li.appendChild(a);
-          if (navliste[key][3] !== undefined && navliste[key][3].length !== 0) {
-            let div = document.createElement("div");
-            let ul2 = document.createElement("ul");
-            for (let i = 0; i < navliste[key][3].length; i++) {
-              let li2 = document.createElement("li");
-              let a2 = document.createElement("a");
-              a2.innerHTML = navliste[key][3][i][0];
-              a2.setAttribute("href", standort + navliste[key][3][i][1]);
-              li2.appendChild(a2);
-              ul2.appendChild(li2);
-              if (
-                filter(pfad.replace("hauptverzeichnis/", "")) ===
-                navliste[key][3][i][1]
-              ) {
-                a2.setAttribute("class", "aktuell2");
-                a.replaceWith(a2.cloneNode(true));
-                let newLI = document.createElement("li");
-                newLI.appendChild(a);
-                ul2.insertBefore(newLI, ul2.children[0]);
-              }
-            }
-            div.appendChild(ul2);
-            li.appendChild(div);
-            li.setAttribute("class", "wahl");
-          }
-          ul.appendChild(li);
         }
-        nav.appendChild(ul);
-        header.appendChild(nav);
-      }
-      //ANCHOR Alles einpacken
-      let h1 = document.querySelector("h1");
-      h1.insertAdjacentElement("beforebegin", header);
-    }
-  }
-}
-function cssOverflow() {
-  setInterval(() => {
-    let allElement = document.body.querySelectorAll("*");
-    for (let i = allElement.length - 1; i >= 0; i--) {
-      if (allElement[i].style.wordBreak === "break-all") {
-        allElement[i].style.wordBreak = "initial";
-      }
-      if (
-        allElement[i].scrollWidth > allElement[i].clientWidth ||
-        allElement[i].scrollHeight > allElement[i].clientHeight
-      ) {
-        allElement[i].style.wordBreak = "break-all";
-      }
-    }
-  }, 1000);
-}
-
-function controlBar() {
-  console.log("!!!---controlBar---!!!");
-  const controller = document.createElement("div");
-  controller.id = "controller";
-  function boxBar() {
-    console.log("!!!---boxBar---!!!");
-    let table = document.createElement("table");
-    table.id = "BoxBar";
-    let tr = document.createElement("tr");
-    for (let i = 2; i < 5; i++) {
-      let th = document.createElement("th");
-      th.innerText = "h" + i;
-      tr.appendChild(th);
-    }
-    table.appendChild(tr);
-    tr = document.createElement("tr");
-    for (let i = 2; i < 5; i++) {
-      let td = document.createElement("td");
-      td.classList.add("h" + i);
-      td.innerText = "Öffnen";
-      tr.appendChild(td);
-    }
-    table.appendChild(tr);
-    tr = document.createElement("tr");
-    for (let i = 2; i < 5; i++) {
-      let td = document.createElement("td");
-      td.classList.add("h" + i);
-      td.innerText = "Schliesen";
-      tr.appendChild(td);
-    }
-    table.appendChild(tr);
-    controller.appendChild(table);
-  }
-
-  function upDown() {
-    let upDownButton = document.createElement("div");
-    //up
-    let up = document.createElement("div");
-    let upLink = document.createElement("a");
-    upLink.href = "#titel";
-    up.innerText = "up";
-    up.id = "up";
-    upLink.appendChild(up);
-    upDownButton.appendChild(upLink);
-    //down
-    let down = document.createElement("div");
-    let downLink = document.createElement("a");
-    downLink.href = "#footer";
-    down.innerText = "down";
-    down.id = "down";
-    downLink.appendChild(down);
-    upDownButton.appendChild(downLink);
-    controller.appendChild(upDownButton);
-  }
-
-  boxBar();
-  upDown();
-  document.body.appendChild(controller);
-}
-
-// NewBoxen System
-function newBoxen() {
-  allDivs = main.getElementsByTagName("div");
-  for (let i = 0; i < allDivs.length; i++) {
-    allDivs[i].style.display = "none";
-  }
-  document.body.addEventListener("click", (e) => {
-    if (e.composedPath().length >= 5) {
-      if (e.composedPath()[e.composedPath().length - 5].matches("main")) {
-        switch (e.target.tagName) {
-          case "H2":
-            Boxen(e);
-            break;
-          case "H3":
-            Boxen(e);
-            break;
-          case "H4":
-            Boxen(e);
-            break;
-        }
-      }
-    }
-  });
-  function Boxen(e) {
-    console.log("!!!---Boxen---!!!");
-    if (e.target.nextElementSibling.style.display === "none") {
-      e.target.nextElementSibling.style.display = "";
-      if (e.target.nextElementSibling.style.length === 0) {
-        e.target.nextElementSibling.removeAttribute("style");
       }
     } else {
-      e.target.nextElementSibling.style.display = "none";
-    }
-  }
-}
-function boxBarSytem() {
-  let boxBar = document.getElementById("BoxBar");
-  boxBar.addEventListener("click", (e) => {
-    if (e.target.matches("td")) {
-      let ClapBox = "none";
-      boxHead = main.getElementsByTagName(e.target.classList[0]);
-      for (let i = 0; i < boxHead.length; i++) {
-        if (e.target.innerText === "Öffnen") {
-          boxHead[i].nextElementSibling.style.display = "";
-          if (boxHead[i].nextElementSibling.style.length === 0) {
-            boxHead[i].nextElementSibling.removeAttribute("style");
-          }
-        } else {
-          boxHead[i].nextElementSibling.style.display = "none";
-        }
-      }
-    }
-  });
-}
-
-//Schreiben
-function clickHold() {
-  console.log("!!!---clickHold---!!!");
-  document.body.addEventListener("mousedown", (e) => {
-    if (
-      document.getElementById("ElementSeletction") === null &&
-      document.getElementById("ElementOption") === null &&
-      document.getElementById("overriteFinishButton") === null
-    ) {
-      if (e.composedPath().length >= 5) {
-        if (e.composedPath()[e.composedPath().length - 5].matches("main")) {
-          function EndMouseEvent() {
-            console.log("!!!---EndMouseEvent---!!!");
-            document.body.removeEventListener("mouseup", EndMouseEvent);
-            document.body.removeEventListener("mouseout", EndMouseEvent);
-            clearTimeout(mouseHold);
-          }
-          document.body.addEventListener("mouseout", EndMouseEvent);
-          document.body.addEventListener("mouseup", EndMouseEvent);
-          mouseHold = setTimeout(() => {
-            document.body.removeEventListener("mouseup", EndMouseEvent);
-            document.body.removeEventListener("mouseout", EndMouseEvent);
-            openOverwriteOption(e.target);
-          }, 1000);
-        }
-      }
+      clickCount = 1;
+      lastClickTime = now;
     }
   });
 }
@@ -319,6 +85,7 @@ function openOverwriteOption(Element) {
   attributeBar();
   overwritePointer();
   overwritePfeile();
+  dropLink();
 }
 //Overwrite navigation
 function windowsItemSelection(e) {
@@ -375,7 +142,7 @@ function focusMovFunc(position) {
       console.log("!!!---click---!!!");
       if (e.target.matches("li")) {
         if (e.target.classList.contains("Focus2")) {
-          liPosition = Array.prototype.slice
+          let liPosition = Array.prototype.slice
             .call(e.target.parentElement.children)
             .indexOf(e.target);
           let targetedItem = FocusElement.children[liPosition];
@@ -429,7 +196,7 @@ function focusMovFunc(position) {
     .addEventListener("mouseover", (e) => {
       // console.log('!!!---mouseover---!!!')
       if (e.target.matches("li")) {
-        liPosition = Array.prototype.slice
+        let liPosition = Array.prototype.slice
           .call(e.target.parentElement.children)
           .indexOf(e.target);
         let targetedItem = FocusElement.children[liPosition];
@@ -445,7 +212,7 @@ function focusMovFunc(position) {
     .addEventListener("mouseout", (e) => {
       // console.log('!!!---mouseout---!!!')
       if (e.target.matches("li")) {
-        liPosition = Array.prototype.slice
+        let liPosition = Array.prototype.slice
           .call(e.target.parentElement.children)
           .indexOf(e.target);
         let targetedItem = FocusElement.children[liPosition];
@@ -481,6 +248,8 @@ function overriteFinish() {
       controller.removeChild(document.getElementById("attributeBar"));
       controller.removeChild(document.getElementById("overwritePointer"));
       controller.removeChild(document.getElementById("overwritePfeile"));
+      main.removeEventListener("dragover", handleDragOver);
+      main.removeEventListener("drop", handleDrop);
       FocusElement = seekFocus();
       if (FocusElement !== undefined) {
         FocusElement.classList.remove("Focus");
@@ -516,7 +285,7 @@ function overwritePointer() {
 //Overwrite ElementOptions
 function ElementOption() {
   console.log("!!!---ElementOption---!!!");
-  overwriteElemente = {
+  let overwriteElemente = {
     Write: [
       "Text",
       "HTML",
@@ -527,7 +296,7 @@ function ElementOption() {
     ],
     ["Einzelne"]: ["li", "td", "th", "tr", "a", "p"],
   };
-  readyMadeOptions = {
+  let readyMadeOptions = {
     BoxSystem: ["article", "section", "div"],
     Auflistung: ["table", "ul", "ol"],
     ["vorgefertigt"]: ["Methoden", "Tabellenzeile", "Tabellenspalte"],
@@ -700,7 +469,7 @@ function textWriteCancel(exception) {
   document.getElementById("TextInput").replaceWith(FocusElement);
   if (exception !== undefined && exception === 1) {
     if (typeof jumpTo !== "undefined") {
-      delete jumpTo;
+      jumpTo = [];
     }
   }
 }
@@ -737,13 +506,15 @@ function writeCancel(exception) {
   document.getElementById("HTMLInput").replaceWith(FocusElement);
   if (exception !== undefined && exception === 1) {
     if (typeof jumpTo !== "undefined") {
-      delete jumpTo;
+      jumpTo = [];
     }
   }
 }
 function writeFinish(button) {
   console.log("!!!---writeFinish---!!!");
-  FocusElement.innerHTML = button.parentElement.querySelector("textarea").value;
+  let text = button.parentElement.querySelector("textarea").value;
+  text = text.replace('class="Focus"', "");
+  FocusElement.innerHTML = text
   document.getElementById("HTMLInput").replaceWith(FocusElement);
   if (typeof jumpTo !== "undefined" && jumpTo.length > 0) {
     windowsItemSelection(jumpTo[0][0]);
@@ -801,6 +572,7 @@ function writeNewElement(button) {
 // copyElement
 function copyElement() {
   console.log("!!!---copyElement---!!!");
+  let text;
   if (
     document
       .getElementById("ElementSeletction")
@@ -868,7 +640,8 @@ function pasteElement() {
 function pushElement(button) {
   console.log("!!!---pushElement---!!!");
   let textContent = button.parentElement.querySelector("textarea").value;
-  textContent.replace(' class="Focus"', "");
+  textContent = textContent.replace('class="Focus"', "");
+  console.log(textContent)
   let range = document.createRange();
   let textElement = range.createContextualFragment(textContent);
   button.parentElement.replaceWith(textElement);
@@ -927,7 +700,6 @@ function overwriteDelete(button) {
 function overwriteArticle() {
   console.log("!!!---overwriteArticle---!!!");
   writeFieldClose();
-  jumpTo = [];
   let article = document.createElement("article");
   let h2 = document.createElement("h2");
   jumpTo.push([h2, 1]);
@@ -964,7 +736,6 @@ function overwriteArticle() {
 function overwriteSection() {
   console.log("!!!---overwriteSection---!!!");
   writeFieldClose();
-  jumpTo = [];
   let section = document.createElement("section");
   let h3 = document.createElement("h3");
   jumpTo.push([h3, 1]);
@@ -1001,18 +772,19 @@ function overwriteSection() {
 function overwriteDIV() {
   console.log("!!!---overwriteDIV---!!!");
   writeFieldClose();
-  jumpTo = [];
+  let divContainer = document.createElement("div");
   let h4 = document.createElement("h4");
   let div = document.createElement("div");
   jumpTo.push([h4, 1]);
   jumpTo.push([div, 0]);
+  divContainer.appendChild(h4);
+  divContainer.appendChild(div);
   if (
     document
       .getElementById("ElementSeletction")
       .getElementsByClassName("Focus2")[0] === undefined
   ) {
-    FocusElement.appendChild(h4);
-    FocusElement.appendChild(div);
+    FocusElement.appendChild(divContainer);
   } else {
     Focus2Number = Array.prototype.slice
       .call(
@@ -1043,11 +815,11 @@ function overwriteDIV() {
 function ElementOptionTableNumber() {
   writeFieldClose();
   // create input field
-  if (document.getElementById("objetNumber") !== null) {
+  if (document.getElementById("inputContainer") !== null) {
     ElementOptionTable(document.getElementById("validateButton"));
   } else {
     let div = NewInput(
-      "objetNumber",
+      "inputContainer",
       "",
       "overwriteDelete(this)",
       "ElementOptionTable(this)"
@@ -1058,14 +830,13 @@ function ElementOptionTableNumber() {
 }
 function ElementOptionTable(button) {
   console.log("!!!---ElementOptionTable2---!!!");
-  jumpTo = [];
   let tableLengthNumber = button.parentElement.querySelector("textarea").value;
   if (tableLengthNumber === "") {
     tableLengthNumber = 1;
   }
   document
-    .getElementById("objetNumber")
-    .parentElement.removeChild(document.getElementById("objetNumber"));
+    .getElementById("inputContainer")
+    .parentElement.removeChild(document.getElementById("inputContainer"));
   let newtable = document.createElement("table");
   let caption = document.createElement("caption");
   newtable.appendChild(caption);
@@ -1118,11 +889,11 @@ function ElementOptionTable(button) {
 // UL
 function ElementOptionULNumber() {
   writeFieldClose();
-  if (document.getElementById("objetNumber") !== null) {
+  if (document.getElementById("inputContainer") !== null) {
     ElementOptionUL(document.getElementById("validateButton"));
   } else {
     let div = NewInput(
-      "objetNumber",
+      "inputContainer",
       "",
       "overwriteDelete(this)",
       "ElementOptionUL(this)"
@@ -1133,14 +904,13 @@ function ElementOptionULNumber() {
 }
 function ElementOptionUL(button) {
   console.log("!!!---ElementOptionUL---!!!");
-  jumpTo = [];
   let ListLengthNumber = button.parentElement.querySelector("textarea").value;
   if (ListLengthNumber === "") {
     ListLengthNumber = 1;
   }
   document
-    .getElementById("objetNumber")
-    .parentElement.removeChild(document.getElementById("objetNumber"));
+    .getElementById("inputContainer")
+    .parentElement.removeChild(document.getElementById("inputContainer"));
   let ul = document.createElement("ul");
   for (let i = 0; i < ListLengthNumber; i++) {
     let li = document.createElement("li");
@@ -1176,11 +946,11 @@ function ElementOptionUL(button) {
 // OL
 function ElementOptionOLNumber() {
   writeFieldClose();
-  if (document.getElementById("objetNumber") !== null) {
+  if (document.getElementById("inputContainer") !== null) {
     ElementOptionOL(document.getElementById("validateButton"));
   } else {
     let div = NewInput(
-      "objetNumber",
+      "inputContainer",
       "",
       "overwriteDelete(this)",
       "ElementOptionOL(this)"
@@ -1191,14 +961,13 @@ function ElementOptionOLNumber() {
 }
 function ElementOptionOL(button) {
   console.log("!!!---ElementOptionOL---!!!");
-  jumpTo = [];
   let ListLengthNumber = button.parentElement.querySelector("textarea").value;
   if (ListLengthNumber === "") {
     ListLengthNumber = 1;
   }
   document
-    .getElementById("objetNumber")
-    .parentElement.removeChild(document.getElementById("objetNumber"));
+    .getElementById("inputContainer")
+    .parentElement.removeChild(document.getElementById("inputContainer"));
   let ol = document.createElement("ol");
   for (let i = 0; i < ListLengthNumber; i++) {
     let li = document.createElement("li");
@@ -1236,11 +1005,11 @@ function ElementOptionOL(button) {
 // LI
 function ElementOptionLINumber() {
   writeFieldClose();
-  if (document.getElementById("objetNumber") !== null) {
+  if (document.getElementById("inputContainer") !== null) {
     ElementOptionLI(document.getElementById("validateButton"));
   } else {
     let div = NewInput(
-      "objetNumber",
+      "inputContainer",
       "",
       "overwriteDelete(this)",
       "ElementOptionLI(this)"
@@ -1251,14 +1020,13 @@ function ElementOptionLINumber() {
 }
 function ElementOptionLI(button) {
   console.log("!!!---ElementOptionLI---!!!");
-  jumpTo = [];
   let ListLengthNumber = button.parentElement.querySelector("textarea").value;
   if (ListLengthNumber === "") {
     ListLengthNumber = 1;
   }
   document
-    .getElementById("objetNumber")
-    .parentElement.removeChild(document.getElementById("objetNumber"));
+    .getElementById("inputContainer")
+    .parentElement.removeChild(document.getElementById("inputContainer"));
   for (let i = 0; i < ListLengthNumber; i++) {
     let li = document.createElement("li");
     jumpTo.push([li, 1]);
@@ -1299,11 +1067,11 @@ function ElementOptionTDNumber() {
   if (document.getElementById("HTMTDnput") !== null) {
     writeCancel();
   }
-  if (document.getElementById("objetNumber") !== null) {
+  if (document.getElementById("inputContainer") !== null) {
     ElementOptionTD(document.getElementById("validateButton"));
   } else {
     let div = NewInput(
-      "objetNumber",
+      "inputContainer",
       "",
       "overwriteDelete(this)",
       "ElementOptionTD(this)"
@@ -1314,14 +1082,13 @@ function ElementOptionTDNumber() {
 }
 function ElementOptionTD(button) {
   console.log("!!!---ElementOptionTD---!!!");
-  jumpTo = [];
   let ListLengthNumber = button.parentElement.querySelector("textarea").value;
   if (ListLengthNumber === "") {
     ListLengthNumber = 1;
   }
   document
-    .getElementById("objetNumber")
-    .parentElement.removeChild(document.getElementById("objetNumber"));
+    .getElementById("inputContainer")
+    .parentElement.removeChild(document.getElementById("inputContainer"));
   for (let i = 0; i < ListLengthNumber; i++) {
     let td = document.createElement("td");
     jumpTo.push([td, 1]);
@@ -1363,11 +1130,11 @@ function ElementOptionTHNumber() {
   if (document.getElementById("HTMTHnput") !== null) {
     writeCancel();
   }
-  if (document.getElementById("objetNumber") !== null) {
+  if (document.getElementById("inputContainer") !== null) {
     ElementOptionTH(document.getElementById("validateButton"));
   } else {
     let div = NewInput(
-      "objetNumber",
+      "inputContainer",
       "",
       "overwriteDelete(this)",
       "ElementOptionTH(this)"
@@ -1378,14 +1145,13 @@ function ElementOptionTHNumber() {
 }
 function ElementOptionTH(button) {
   console.log("!!!---ElementOptionTH---!!!");
-  jumpTo = [];
   let ListLengthNumber = button.parentElement.querySelector("textarea").value;
   if (ListLengthNumber === "") {
     ListLengthNumber = 1;
   }
   document
-    .getElementById("objetNumber")
-    .parentElement.removeChild(document.getElementById("objetNumber"));
+    .getElementById("inputContainer")
+    .parentElement.removeChild(document.getElementById("inputContainer"));
   for (let i = 0; i < ListLengthNumber; i++) {
     let th = document.createElement("th");
     jumpTo.push([th, 1]);
@@ -1411,7 +1177,6 @@ function ElementOptionTH(button) {
           .getElementsByClassName("Focus2")[0]
       );
     for (let i = ListLengthNumber - 1; i >= 0; i--) {
-      console.count("runde");
       FocusElement.children[Focus2Number].insertAdjacentElement(
         "beforebegin",
         jumpTo[i][0]
@@ -1523,8 +1288,7 @@ function ElementOptionP() {
 function ElementOptionMethods() {
   console.log("!!!---ElementOptionTable---!!!");
   writeFieldClose();
-  jumpTo = [];
-  subclasses = ["Methoden", "Wirkung", "Syntax", "Beispiel"];
+  let subclasses = ["Methoden", "Wirkung", "Syntax", "Beispiel"];
   let newtable = document.createElement("table");
   let caption = document.createElement("caption");
   newtable.appendChild(caption);
@@ -1600,36 +1364,10 @@ function ElementOptionTablesRow() {
   }
   if (searchedElement.tagName !== "TABLE") {
   } else {
-    if (insideTbody === undefined) {
-    } else {
-      let selectDiv = document.createElement("div");
-      selectDiv.id = "selectDiv";
-      let tdButton = document.createElement("button");
-      tdButton.innerText = "td";
-      tdButton.id = "selectTd";
-      selectDiv.appendChild(tdButton);
-
-      let thButton = document.createElement("button");
-      thButton.innerText = "th";
-      thButton.id = "selectTh";
-      selectDiv.appendChild(thButton);
-      controller.appendChild(selectDiv);
-
-      document
-        .getElementById("selectTd")
-        .addEventListener("click", function trFillTd() {
-          selectTrContent = 1;
-          createTableRow();
-          controller.removeChild(document.getElementById("selectDiv"));
-        });
-      document
-        .getElementById("selectTh")
-        .addEventListener("click", function trFillTh() {
-          selectTrContent = 0;
-          createTableRow();
-          controller.removeChild(document.getElementById("selectDiv"));
-        });
-      function createTableRow() {
+    if (insideTbody !== undefined) {
+      let selectArray = [[0, "td", () => createTableRow(1)], [0, "th", () => createTableRow(0)]]
+      selectionBar(selectArray)
+      function createTableRow(selectTrContent) {
         let tableRowLength;
         if (insideTbody) {
           tableRowLength =
@@ -1644,7 +1382,7 @@ function ElementOptionTablesRow() {
         } else {
           itemSelection = "th";
         }
-        jumpTo = [];
+
         let tr = document.createElement("tr");
         for (let i = 0; i < tableRowLength; i++) {
           let td = document.createElement(itemSelection);
@@ -1652,7 +1390,7 @@ function ElementOptionTablesRow() {
           jumpTo.push([td, 1]);
         }
         if (orientationElement !== undefined) {
-          trNumber = Array.prototype.slice
+          let trNumber = Array.prototype.slice
             .call(orientationElement.parentElement.children)
             .indexOf(orientationElement);
           orientationElement.parentElement.children[
@@ -1705,48 +1443,17 @@ function ElementOptionTablesColumn() {
   }
   if (searchedElement.tagName !== "TABLE") {
   } else {
-    let selectDiv = document.createElement("div");
-    selectDiv.id = "selectDiv";
-
-    let leftButton = document.createElement("button");
-    leftButton.id = "selectleft";
-    let leftImg = document.createElement("img");
-    leftImg.setAttribute("src", standort + "../icons/svg/west_black_24dp.svg");
-    leftButton.appendChild(leftImg);
-    selectDiv.appendChild(leftButton);
-
-    let rigthButton = document.createElement("button");
-    rigthButton.id = "selectrigth";
-    let rigthImg = document.createElement("img");
-    rigthImg.setAttribute("src", standort + "../icons/svg/east_black_24dp.svg");
-    rigthButton.appendChild(rigthImg);
-    selectDiv.appendChild(rigthButton);
-
-    controller.appendChild(selectDiv);
-
-    document
-      .getElementById("selectleft")
-      .addEventListener("click", function trFillTd() {
-        selectDirection = 1;
-        createTableColumn();
-        controller.removeChild(document.getElementById("selectDiv"));
-      });
-    document
-      .getElementById("selectrigth")
-      .addEventListener("click", function trFillTh() {
-        selectDirection = 0;
-        createTableColumn();
-        controller.removeChild(document.getElementById("selectDiv"));
-      });
-    function createTableColumn() {
-      orientationtNumber = Array.prototype.slice
+    let selectArray = [[1, "../icons/svg/west_black_24dp.svg", () => createTableColumn(1)], [1, "../icons/svg/east_black_24dp.svg", () => createTableColumn(0)]]
+    selectionBar(selectArray)
+    function createTableColumn(selectDirection) {
+      let orientationtNumber = Array.prototype.slice
         .call(orientationElement.parentElement.children)
         .indexOf(orientationElement);
       let allCells =
         orientationElement.parentElement.parentElement.parentElement.querySelectorAll(
           "tr"
         );
-      jumpTo = [];
+
       for (let i = 0; i < allCells.length; i++) {
         let cell = document.createElement(
           allCells[i].children[0].tagName.toLowerCase()
@@ -1770,9 +1477,13 @@ function ElementOptionTablesColumn() {
   }
 }
 
+
+
+
+
 // Attribute bar
 function attributeBar() {
-  FocusAttribute = FocusElement.getAttributeNames();
+  var FocusAttribute = FocusElement.getAttributeNames();
   if (document.getElementById("attributeBar") !== null) {
     document
       .getElementById("attributeBar")
@@ -1820,7 +1531,7 @@ function readAttribute(e) {
           //New Code
           let content = "";
           if (e.target.innerText !== "Hinzufügen") {
-            speziolAttribute = {
+            let speziolAttribute = {
               class: FocusElement.className,
               style: FocusElement[e.target.innerText]?.cssText,
             };
@@ -1866,6 +1577,7 @@ function readAttribute(e) {
     }
   }
 }
+
 function attributeCancel() {
   if (document.getElementById("attributeBox") !== null) {
     document
@@ -1896,8 +1608,8 @@ function attributeValidate() {
         "//" +
         window.location.host +
         window.location.pathname.slice(0, 18);
-      if (attributeName === "href" && wert.includes(pfadSearch)) {
-        wert = wert.replace(pfadSearch, "../");
+      if (attributeName === "href" && wert.includes(wert)) {
+        wert = wert.replace(pfadSearch, locationPath);
       }
       FocusElement.setAttribute(attributeName, wert);
       attributeCancel();
@@ -1931,14 +1643,14 @@ function overwritePfeile() {
   let pfeilTop = document.createElement("button");
   pfeilTop.setAttribute("onclick", "ElementGoLeftUp()");
   let img = document.createElement("img");
-  img.setAttribute("src", standort + "../icons/svg/north_black_24dp.svg");
+  img.setAttribute("src", locationPath + "../icons/svg/north_black_24dp.svg");
   pfeilTop.appendChild(img);
   div.appendChild(pfeilTop);
   // Bottom
   let pfeilBottom = document.createElement("button");
   pfeilBottom.setAttribute("onclick", "ElementGoRightDown()");
   img = document.createElement("img");
-  img.setAttribute("src", standort + "../icons/svg/south_black_24dp.svg");
+  img.setAttribute("src", locationPath + "../icons/svg/south_black_24dp.svg");
   pfeilBottom.appendChild(img);
   div.appendChild(pfeilBottom);
   controller.appendChild(div);
@@ -2038,108 +1750,77 @@ function ElementGoRightDown() {
       .querySelector("div").scrollTop = topPos;
   }
 }
-
-// Alt
-function writeallPfeile() {
-  console.log("!!!---writeallPfeile---!!!");
-  if (e.parentNode?.tagName === "UL" || e.parentNode?.tagName === "OL") {
-    e.setAttribute("style", "position: relative");
-    // Top
-    let pfeilTop = document.createElement("button");
-    pfeilTop.setAttribute(
-      "style",
-      "position: absolute; left: 40%; top: -50px;"
-    );
-    pfeilTop.setAttribute("onclick", "ElementGoLeftup(this)");
-    let img = document.createElement("img");
-    img.setAttribute("src", standort + "../icons/svg/north_black_24dp.svg");
-    pfeilTop.appendChild(img);
-    e.appendChild(pfeilTop);
-    // Bottom
-    let pfeilBottom = document.createElement("button");
-    pfeilBottom.setAttribute(
-      "style",
-      "position: absolute; left: 40%; bottom: -50px;"
-    );
-    pfeilBottom.setAttribute("onclick", "ElementGoRightDown(this)");
-    img = document.createElement("img");
-    img.setAttribute("src", standort + "../icons/svg/south_black_24dp.svg");
-    pfeilBottom.appendChild(img);
-    e.appendChild(pfeilBottom);
+// Drag and Drop
+function dropLink() {
+  console.log("!!!---dropLink---!!!");
+  main.addEventListener("dragover", handleDragOver);
+  main.addEventListener("drop", handleDrop);
+}
+function handleDragOver(event) {
+  event.preventDefault();
+}
+function handleDrop(event) {
+  if (event.target.tagName === "UL" || event.target.tagName === "OL") {
+    event.preventDefault();
+    let url = event.dataTransfer.getData("URL");
+    insertLink(url, event.target);
   }
-  if (e.parentNode?.tagName === "TR" || e.parentNode?.tagName === "TH") {
-    e.setAttribute("style", "position: relative");
-    // Left
-    let pfeilLeft = document.createElement("button");
-    pfeilLeft.setAttribute("style", "position: absolute; left: -100px;");
-    pfeilLeft.setAttribute("onclick", "ElementGoLeftup(this)");
-    let img = document.createElement("img");
-    img.setAttribute("src", standort + "../icons/svg/west_black_24dp.svg");
-    pfeilLeft.appendChild(img);
-    e.appendChild(pfeilLeft);
-    // Right
-    let pfeilRight = document.createElement("button");
-    pfeilRight.setAttribute("style", "position: absolute; right: -100px;");
-    pfeilRight.setAttribute("onclick", "ElementGoRightDown(this)");
-    img = document.createElement("img");
-    img.setAttribute("src", standort + "../icons/svg/east_black_24dp.svg");
-    pfeilRight.appendChild(img);
-    e.appendChild(pfeilRight);
-    // Top
-    let pfeilTop = document.createElement("button");
-    pfeilTop.setAttribute(
-      "style",
-      "position: absolute; left: 40%; top: -50px;"
-    );
-    pfeilTop.setAttribute("onclick", "ElementparentGoUp(this)");
-    img = document.createElement("img");
-    img.setAttribute("src", standort + "../icons/svg/north_black_24dp.svg");
-    pfeilTop.appendChild(img);
-    e.appendChild(pfeilTop);
-    // Bottom
-    let pfeilBottom = document.createElement("button");
-    pfeilBottom.setAttribute(
-      "style",
-      "position: absolute; left: 40%; bottom: -50px;"
-    );
-    pfeilBottom.setAttribute("onclick", "ElementparentGoDown(this)");
-    img = document.createElement("img");
-    img.setAttribute("src", standort + "../icons/svg/south_black_24dp.svg");
-    pfeilBottom.appendChild(img);
-    e.appendChild(pfeilBottom);
+  if (event.target.tagName === "LI") {
+    event.preventDefault();
+    let url = event.dataTransfer.getData("URL");
+    insertLink(url, event.target.parentElement);
+  }
+  if (event.target.tagName === "A") {
+    if (event.target.parentElement.tagName === "LI") {
+      event.preventDefault();
+      let url = event.dataTransfer.getData("URL");
+      insertLink(url, event.target.parentElement.parentElement);
+    }
+  }
+  if (event.target.tagName === "TD") {
+    event.preventDefault();
+    let url = event.dataTransfer.getData("URL");
+    insertLinkTD(url, event.target);
   }
 }
-function ElementparentGoUp(e) {
-  e.parentNode.parentNode.insertAdjacentElement(
-    "afterend",
-    e.parentNode.parentNode.previousElementSibling
-  );
+function insertLink(url, dropInElement) {
+  let title = url.split("/")[2];
+  let li = document.createElement("li");
+  let a = document.createElement("a");
+  a.innerText = title;
+  a.href = url;
+  li.appendChild(a);
+  dropInElement.appendChild(li);
+  windowsItemSelection(a);
+  overwriteText();
 }
-function ElementparentGoDown(e) {
-  e.parentNode.parentNode.insertAdjacentElement(
-    "beforebegin",
-    e.parentNode.parentNode.nextElementSibling
-  );
+function insertLinkTD(url, dropInElement) {
+  let title = url.split("/")[2];
+  let a = document.createElement("a");
+  a.innerText = title;
+  a.href = url;
+  dropInElement.appendChild(a);
+  windowsItemSelection(a);
+  overwriteText();
 }
-
 // revise Send
 
 function reviseSend() {
   console.log("!!!---reviseSend---!!!");
-  url =
+  let url =
     window.location.protocol +
     "//" +
     window.location.hostname +
     ":" +
     (PORT + 5);
-  main2 = main.cloneNode(true);
-  ExtraButton = Array.prototype.slice.call(
-    main2.getElementsByClassName("allURLOpen")
+  let main2 = main.cloneNode(true);
+  let ExtraButton = Array.prototype.slice.call(
+    main2.getElementsByClassName("notSave")
   );
   for (let i = 0; i < ExtraButton.length; i++) {
     ExtraButton[i].parentElement.removeChild(ExtraButton[i]);
   }
-  deleteStyle = main2.querySelectorAll("[style]");
+  let deleteStyle = main2.querySelectorAll("[style]");
   for (let i = 0; i < deleteStyle.length; i++) {
     deleteStyle[i].removeAttribute("style");
   }
@@ -2164,131 +1845,4 @@ function reviseSend() {
     .catch((error) => {
       console.error("Error:", error);
     });
-}
-
-// Function
-
-function filter(ausdruck) {
-  ausgabe = ausdruck;
-  while (
-    ausgabe.includes("%C3%A4") ||
-    ausgabe.includes("%C3%B6") ||
-    ausgabe.includes("%C3%BC") ||
-    ausgabe.includes("%23") ||
-    ausgabe.includes("%20") ||
-    ausgabe.includes("#Focus")
-  ) {
-    ausgabe = ausgabe
-      .replace("%C3%A4", "ä")
-      .replace("%C3%B6", "ö")
-      .replace("%C3%BC", "ü")
-      .replace("%23", "#")
-      .replace("%20", " ")
-      .replace("#Focus", "");
-  }
-  return ausgabe;
-}
-
-function AllKeys(key, pop, number) {
-  let keylength;
-  if (number === undefined) {
-    keylength = Object.keys(key).length;
-  } else {
-    keylength = number;
-  }
-  for (let i = 0; i < keylength; i++) {
-    if (pop) {
-    }
-  }
-}
-
-function seekFocus() {
-  console.log("!!!---seekFocus---!!!");
-  if (main.classList.contains("Focus")) {
-    let findFocus = main;
-    return findFocus;
-  } else {
-    let findFocus = main.getElementsByClassName("Focus")[0];
-    if (findFocus === undefined) {
-      findFocus = document.getElementsByClassName("Focus")[0];
-      return findFocus;
-    } else {
-      return findFocus;
-    }
-  }
-}
-
-//New construction site
-function NewInput(divId, content, func1, func2, inputID) {
-  console.log("!!!---NewInput---!!!");
-  let div = document.createElement("div");
-  div.id = divId;
-  // cancelButton
-  let cancelButton = document.createElement("button");
-  cancelButton.setAttribute("onclick", func1);
-  cancelButton.id = "canselButton";
-  let img = document.createElement("img");
-  img.setAttribute("src", standort + "../icons/svg/cancel_black_24dp.svg");
-  cancelButton.appendChild(img);
-  // validateButton
-  let validateButton = document.createElement("button");
-  validateButton.setAttribute("onclick", func2);
-  validateButton.id = "validateButton";
-  img = document.createElement("img");
-  img.setAttribute("src", standort + "../icons/svg/check_black_24dp.svg");
-  validateButton.appendChild(img);
-  //writeTextarea
-  let textarea = document.createElement("textarea");
-  textarea.classList.add("textarea_for_overwrite");
-  textarea.setAttribute(
-    "onkeydown",
-    "useKeyButton(this, '" +
-      func1.split("(")[0] +
-      "', '" +
-      func2.split("(")[0] +
-      "')"
-  );
-  if (inputID === undefined) {
-    textarea.id = "textInput";
-  } else {
-    textarea.id = inputID;
-  }
-  (textarea.value = content),
-    //Hinzufügen
-    div.appendChild(cancelButton);
-  div.appendChild(textarea);
-  div.appendChild(validateButton);
-  return div;
-}
-
-function writeFieldClose() {
-  if (document.getElementById("TextInput") !== null) {
-    textWriteCancel();
-  }
-}
-
-function useKeyButton(keyButton, func1, func2) {
-  console.log("!!!!!!_____KEY_____!!!!!!");
-  document.onkeydown = function (e) {
-    switch (e.code) {
-      case "Enter":
-        if (!e.shiftKey) {
-          // Überprüfen, ob die Shift-Taste nicht gedrückt ist
-          e.preventDefault();
-          window[func2](keyButton);
-        }
-        break;
-      case "Escape":
-        e.preventDefault();
-        window[func1](1);
-        break;
-    }
-  };
-}
-
-function newSpalt(body) {
-  for (let i = 0; i < body.children.length; i++) {
-    let td = document.createElement("td");
-    body.children[i].appendChild(td);
-  }
 }

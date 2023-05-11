@@ -398,7 +398,6 @@ a[href*='https://developer.android.com']
 
 /*SECTION Kontrollanzeige---------------------------------------------------------------------------------------------------------------------------------------------------------*/
 /*ANCHOR Schnell nach hoch/runter*/
-/*!SECTION */
 :is(#up, #down) {
   position: fixed;
   text-decoration: none;
@@ -576,7 +575,7 @@ textarea {
   font-size: 40px;
 }
 /* input fields */
-#objetNumber {
+#inputContainer {
   display: flex;
   position: fixed;
   left: 0;
@@ -584,14 +583,14 @@ textarea {
   margin: 0;
   padding: 0;
 }
-#objetNumber button {
+#inputContainer button {
   width: 3vw;
   margin: 0vw;
   padding: 0vw;
   border: 0.5vh var(--border-color) solid;
   font-size: 1.4vw;
 }
-#objetNumber textarea {
+#inputContainer textarea {
   font-size: 1.5vw;
   border-radius: 3%;
   border: 0.5vh var(--text-border-color) solid;
@@ -599,7 +598,7 @@ textarea {
   margin: 0vw;
   padding: 0vw;
 }
-#objetNumber textarea:focus {
+#inputContainer textarea:focus {
   border: 0.8vh var(--border-color) solid;
   outline: none;
 }

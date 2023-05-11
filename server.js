@@ -11,7 +11,7 @@ const analy = require('./ToolAnalyse.js');
 // Variablen
 const PORT = 8000;
 const folderLocation = "";
-const vorlage = fs.readFileSync(folderLocation + "./anwendung/seiten vorlage/vorlage.html", { encoding: "utf8", flag: "r", });
+const vorlage = fs.readFileSync(folderLocation + "./vorlage/vorlage.html", { encoding: "utf8", flag: "r", });
 
 // Debuging
 analyseOutput = 1

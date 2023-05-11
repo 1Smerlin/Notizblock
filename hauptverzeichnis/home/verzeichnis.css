@@ -1,0 +1,21 @@
+.unterwahl {
+  background-color: rgb(55, 188, 237);
+}
+
+/*!CATEGORY Kontrollanzeige*/
+
+/*CATEGORY Verzeichnis*/
+/* Knöpfe */
+:disabled {
+  display: none;
+}
+.hinzufügButton {
+  position: absolute;
+  left: -100px;
+  top: 0px;
+}
+.löschButton {
+  position: absolute;
+  left: -70px;
+  top: 30px;
+}
